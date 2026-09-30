@@ -1,6 +1,7 @@
 package com.mr712.modded2vanilla.tracker;
 
 import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.state.IsolatorState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
@@ -26,17 +27,47 @@ public final class AdjustmentTracker {
         }
         String jarName = resolveJarName(modId);
         AFFECTED_JARS.add(jarName);
+        if (IsolatorState.isMultiplayer()) {
+            printNoticeIfAny();
+        }
     }
 
     public static void recordClass(Class<?> clazz) {
         if (clazz == null) {
             return;
         }
-        String className = clazz.getName();
-        if (className.startsWith("net.minecraft.") || className.startsWith("java.") || className.startsWith("com.mr712.modded2vanilla.")) {
+        recordClassName(clazz.getName());
+    }
+
+    public static void recordClassName(String className) {
+        if (className == null || className.isEmpty()) {
             return;
         }
-        // Attempt to find mod container by code source or package
+        if (className.startsWith("net.minecraft.") || className.startsWith("java.") || className.startsWith("jdk.") || className.startsWith("com.mr712.modded2vanilla.")) {
+            return;
+        }
+
+        // 1. Try to find mod container via loaded class CodeSource
+        try {
+            Class<?> clazz = Class.forName(className, false, AdjustmentTracker.class.getClassLoader());
+            if (clazz.getProtectionDomain() != null && clazz.getProtectionDomain().getCodeSource() != null) {
+                java.net.URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
+                if (url != null) {
+                    String path = url.getPath();
+                    if (path.endsWith(".jar")) {
+                        String fileName = java.nio.file.Paths.get(url.toURI()).getFileName().toString();
+                        AFFECTED_JARS.add(fileName);
+                        if (IsolatorState.isMultiplayer()) {
+                            printNoticeIfAny();
+                        }
+                        return;
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+
+        // 2. Scan all loaded mod containers by package / modId matching
         for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
             String modId = container.getMetadata().getId();
             if ("minecraft".equals(modId) || "fabricloader".equals(modId) || "java".equals(modId)) {

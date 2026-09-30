@@ -23,6 +23,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
         }
     }
 
+    @Inject(method = "clearWorld", at = @At("HEAD"))
+    private void modded2Vanilla$onClearWorld(CallbackInfo ci) {
+        AdjustmentTracker.resetSessionNotice();
+    }
+
     @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
     private void modded2Vanilla$guardPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
         if (!IsolatorState.isMultiplayer()) {

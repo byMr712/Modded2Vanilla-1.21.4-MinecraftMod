@@ -3,6 +3,7 @@ package com.mr712.modded2vanilla.mixin;
 import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracked;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +25,26 @@ public abstract class DataTrackerMixin {
 
     @Shadow
     private DataTracker.Entry<?>[] entries;
+
+    @Inject(method = "registerData", at = @At("HEAD"))
+    private static <T> void modded2Vanilla$onRegisterData(
+        Class<? extends Entity> entityClass, TrackedDataHandler<T> dataHandler, CallbackInfoReturnable<TrackedData<T>> cir
+    ) {
+        if (entityClass != null && entityClass.getName().startsWith("net.minecraft.")) {
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            for (StackTraceElement element : stack) {
+                String className = element.getClassName();
+                if (!className.startsWith("net.minecraft.") &&
+                    !className.startsWith("java.") &&
+                    !className.startsWith("jdk.") &&
+                    !className.startsWith("org.spongepowered.") &&
+                    !className.startsWith("com.mr712.modded2vanilla.")) {
+                    AdjustmentTracker.recordClassName(className);
+                    break;
+                }
+            }
+        }
+    }
 
     @Inject(method = "writeUpdatedEntries", at = @At("HEAD"), cancellable = true)
     private void modded2Vanilla$safeWriteUpdatedEntries(
