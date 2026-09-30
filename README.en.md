@@ -32,12 +32,22 @@ When content mods are installed on a client, they expand entity metadata tables 
   - Automatically validates entity data handler types between server and client.
   - Dynamically re-aligns shifted indices when connecting to vanilla servers.
   - Prevents crashes and sudden client disconnects from incompatible entity packets.
+- **Safe Entity Render Layer**:
+  - Guards against client crashes caused by failing third-party `FeatureRenderer` implementations (custom animations, 3D armor models, cosmetics), rendering fallback base entity models cleanly.
+- **Intelligent Outgoing Packet Filtering (`CustomPayload`)**:
+  - Automatically suppresses unannounced modded payload channels on strict vanilla servers to prevent anti-cheat kicks (*"Unknown custom packet channel"*), while preserving full communication on modded servers that declare support.
+- **Conventional / Fabric Tags Client Fallback**:
+  - Automatically binds conventional tags (`c:ores`, `c:chests`, `c:tools`, `c:shears`) to vanilla equivalents on servers that omit non-minecraft tags, ensuring inventory sorters, HUDs, maps, and tool mods function properly.
+- **Data Component Sanitizer (`Data Components`)**:
+  - Sanitizes inventory interaction packets destined for vanilla servers by stripping mod-specific component keys, preventing server kicks due to unrecognized item stack components.
 - **Safe Network Packet Handling**:
-  - Guards against invalid or unmapped sound and particle identifiers sent by multiplayer servers, preventing `Internal Exception` disconnects.
-- **Early Registry Initialization Isolation**:
-  - Protects standard registries from corruption during early game bootstrap.
+  - Filters malformed or unmapped sound, particle, and screen packets (`OpenScreenS2CPacket`), preventing `Internal Exception` disconnects.
+- **Early Registry Initialization Isolation & Canonical State Snapshots**:
+  - Protects vanilla registries from pollution and guarantees a canonical 1:1 block palette on multiplayer servers.
 - **Seamless ViaFabricPlus Support**:
   - Maintains clean metadata environments for network protocol translators when connecting to legacy server versions (1.8 through 1.21.x).
+- **Comprehensive Adjustment Notifications**:
+  - Logs a formatted notice banner listing all affected `.jar` files upon client startup and server join when adjustments are applied.
 
 ---
 
