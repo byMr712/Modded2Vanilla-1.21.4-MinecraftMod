@@ -34,11 +34,7 @@ public abstract class DataTrackerMixin {
             StackTraceElement[] stack = Thread.currentThread().getStackTrace();
             for (StackTraceElement element : stack) {
                 String className = element.getClassName();
-                if (!className.startsWith("net.minecraft.") &&
-                    !className.startsWith("java.") &&
-                    !className.startsWith("jdk.") &&
-                    !className.startsWith("org.spongepowered.") &&
-                    !className.startsWith("com.mr712.modded2vanilla.")) {
+                if (!AdjustmentTracker.isSystemClass(className)) {
                     AdjustmentTracker.recordClassName(className);
                     break;
                 }

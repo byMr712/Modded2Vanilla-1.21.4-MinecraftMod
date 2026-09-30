@@ -22,11 +22,50 @@ public final class AdjustmentTracker {
     private AdjustmentTracker() {
     }
 
+    public static boolean isSystemClass(String className) {
+        if (className == null || className.isEmpty()) {
+            return true;
+        }
+        return className.startsWith("net.minecraft.") ||
+               className.startsWith("com.mojang.") ||
+               className.startsWith("net.fabricmc.loader.") ||
+               className.startsWith("net.fabricmc.fabric.") ||
+               className.startsWith("java.") ||
+               className.startsWith("javax.") ||
+               className.startsWith("jdk.") ||
+               className.startsWith("sun.") ||
+               className.startsWith("org.spongepowered.") ||
+               className.startsWith("org.objectweb.asm.") ||
+               className.startsWith("org.slf4j.") ||
+               className.startsWith("org.apache.") ||
+               className.startsWith("com.mr712.modded2vanilla.");
+    }
+
+    public static boolean isSystemMod(String modId) {
+        if (modId == null || modId.isEmpty()) {
+            return true;
+        }
+        return "minecraft".equalsIgnoreCase(modId) ||
+               "fabricloader".equalsIgnoreCase(modId) ||
+               "fabric-loader".equalsIgnoreCase(modId) ||
+               "fabric".equalsIgnoreCase(modId) ||
+               "fabric-api".equalsIgnoreCase(modId) ||
+               "java".equalsIgnoreCase(modId) ||
+               "brigadier".equalsIgnoreCase(modId) ||
+               modId.startsWith("fabric-") ||
+               modId.startsWith("fabric_") ||
+               modId.startsWith("com_mojang_") ||
+               "modded2vanilla".equalsIgnoreCase(modId);
+    }
+
     public static void recordMod(String modId) {
-        if (modId == null || modId.isEmpty() || "minecraft".equalsIgnoreCase(modId)) {
+        if (isSystemMod(modId)) {
             return;
         }
         String jarName = resolveJarName(modId);
+        if (jarName.startsWith("fabric-loader") || jarName.startsWith("brigadier") || jarName.startsWith("fabric-api")) {
+            return;
+        }
         AFFECTED_JARS.add(jarName);
         if (IsolatorState.isMultiplayer()) {
             printNoticeIfAny();
@@ -41,10 +80,7 @@ public final class AdjustmentTracker {
     }
 
     public static void recordClassName(String className) {
-        if (className == null || className.isEmpty()) {
-            return;
-        }
-        if (className.startsWith("net.minecraft.") || className.startsWith("java.") || className.startsWith("jdk.") || className.startsWith("com.mr712.modded2vanilla.")) {
+        if (isSystemClass(className)) {
             return;
         }
 
@@ -57,11 +93,13 @@ public final class AdjustmentTracker {
                     String path = url.getPath();
                     if (path.endsWith(".jar")) {
                         String fileName = java.nio.file.Paths.get(url.toURI()).getFileName().toString();
-                        AFFECTED_JARS.add(fileName);
-                        if (IsolatorState.isMultiplayer()) {
-                            printNoticeIfAny();
+                        if (!fileName.startsWith("fabric-loader") && !fileName.startsWith("brigadier") && !fileName.startsWith("fabric-api")) {
+                            AFFECTED_JARS.add(fileName);
+                            if (IsolatorState.isMultiplayer()) {
+                                printNoticeIfAny();
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
