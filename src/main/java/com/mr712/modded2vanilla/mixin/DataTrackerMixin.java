@@ -2,6 +2,7 @@ package com.mr712.modded2vanilla.mixin;
 
 import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
+import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.entity.data.DataTracked;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -52,6 +53,9 @@ public abstract class DataTrackerMixin {
             final DataTracker.Entry<?> targetEntry = resolveMatchingEntry(rawId, serializedEntry);
 
             if (targetEntry != null) {
+                if (targetEntry.getData() != null && targetEntry.getData().id() != rawId && this.trackedEntity != null) {
+                    AdjustmentTracker.recordClass(this.trackedEntity.getClass());
+                }
                 try {
                     copySafely(targetEntry, serializedEntry);
                     if (this.trackedEntity != null) {
@@ -64,6 +68,9 @@ public abstract class DataTrackerMixin {
                     );
                 }
             } else {
+                if (this.trackedEntity != null) {
+                    AdjustmentTracker.recordClass(this.trackedEntity.getClass());
+                }
                 Modded2Vanilla.LOGGER.debug(
                     "[Modded2Vanilla] Suppressed unresolvable tracked entry id {} for entity {}",
                     rawId, this.trackedEntity
@@ -91,6 +98,9 @@ public abstract class DataTrackerMixin {
             return;
         }
         if (to == null || from == null || !sameHandler(to.getData(), from.handler())) {
+            if (this.trackedEntity != null) {
+                AdjustmentTracker.recordClass(this.trackedEntity.getClass());
+            }
             Modded2Vanilla.LOGGER.debug(
                 "[Modded2Vanilla] Suppressed incompatible entity data update for {}: {}",
                 this.trackedEntity, from

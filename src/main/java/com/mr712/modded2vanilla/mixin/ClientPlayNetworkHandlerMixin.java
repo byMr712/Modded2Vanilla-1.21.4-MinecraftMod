@@ -2,7 +2,9 @@ package com.mr712.modded2vanilla.mixin;
 
 import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
+import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
@@ -13,6 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
+
+    @Inject(method = "onGameJoin", at = @At("TAIL"))
+    private void modded2Vanilla$onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+        if (IsolatorState.isMultiplayer()) {
+            AdjustmentTracker.printNoticeIfAny();
+        }
+    }
 
     @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)
     private void modded2Vanilla$guardPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {

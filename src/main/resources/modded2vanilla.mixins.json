@@ -4,13 +4,10 @@
   "package": "com.mr712.modded2vanilla.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlockMixin",
     "DataTrackerMixin",
     "MixinBootstrap",
-    "compat.tide.MixinTideBlockEntities",
-    "compat.tide.MixinTideBlocks",
-    "compat.tide.MixinTideEntityTypes",
-    "compat.tide.MixinTideItems",
-    "compat.tide.MixinTideSoundEvents"
+    "RegistryMixin"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin"

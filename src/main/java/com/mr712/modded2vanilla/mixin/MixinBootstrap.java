@@ -1,6 +1,7 @@
 package com.mr712.modded2vanilla.mixin;
 
-import com.mr712.modded2vanilla.compat.tide.TideRegistryDeferHandler;
+import com.mr712.modded2vanilla.registry.UniversalRegistryBuffer;
+import com.mr712.modded2vanilla.snapshot.VanillaBlockStateSnapshot;
 import net.minecraft.Bootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,8 +11,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Bootstrap.class)
 public abstract class MixinBootstrap {
 
+    @Inject(method = "initialize", at = @At("HEAD"))
+    private static void onBootstrapStart(CallbackInfo ci) {
+        UniversalRegistryBuffer.setBootstrappingVanilla(true);
+    }
+
     @Inject(method = "initialize", at = @At("TAIL"))
     private static void onBootstrapInitialized(CallbackInfo ci) {
-        TideRegistryDeferHandler.flush();
+        VanillaBlockStateSnapshot.capture();
+        UniversalRegistryBuffer.flushAll();
     }
 }
