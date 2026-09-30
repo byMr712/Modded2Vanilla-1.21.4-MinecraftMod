@@ -6,9 +6,14 @@
   "mixins": [
     "DataTrackerMixin",
     "MixinBootstrap",
-    "compat.tide.MixinTideItems"
+    "compat.tide.MixinTideBlockEntities",
+    "compat.tide.MixinTideBlocks",
+    "compat.tide.MixinTideEntityTypes",
+    "compat.tide.MixinTideItems",
+    "compat.tide.MixinTideSoundEvents"
   ],
   "client": [
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

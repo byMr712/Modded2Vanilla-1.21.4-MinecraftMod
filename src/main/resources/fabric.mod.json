@@ -8,7 +8,9 @@
     "byMr712"
   ],
   "contact": {
-    "sources": "https://github.com/Unknowneth"
+    "sources": "https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod",
+    "issues": "https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod/issues",
+    "homepage": "https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod"
   },
   "license": "Apache-2.0",
   "icon": "assets/modded2vanilla/icon.png",

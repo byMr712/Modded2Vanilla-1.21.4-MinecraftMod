@@ -12,20 +12,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @SuppressWarnings({"UnresolvedMixinReference", "MixinAnnotationTarget"})
 @Pseudo
-@Mixin(targets = "com.li64.tide.registries.TideItems", remap = false)
-public abstract class MixinTideItems {
+@Mixin(targets = "com.li64.tide.registries.TideBlockEntities", remap = false)
+public abstract class MixinTideBlockEntities {
 
     @Redirect(
-        method = "register(Lnet/minecraft/class_5321;Lnet/minecraft/class_1792;)Lnet/minecraft/class_1792;",
+        method = "register(Ljava/lang/String;Lnet/minecraft/class_2591;)Lnet/minecraft/class_2591;",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/class_2378;method_39197(Lnet/minecraft/class_2378;Lnet/minecraft/class_5321;Ljava/lang/Object;)Ljava/lang/Object;"
+            target = "Lnet/minecraft/class_2378;method_10226(Lnet/minecraft/class_2378;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;"
         ),
         remap = false,
         require = 0
     )
-    private static Object deferRegisterIntermediary(Registry<?> registry, RegistryKey<?> key, Object item) {
-        return TideRegistryDeferHandler.deferItem(key, item);
+    private static Object deferRegisterBlockEntity(Registry<?> registry, String name, Object blockEntityType) {
+        return TideRegistryDeferHandler.deferBlockEntity(name, blockEntityType);
     }
 
     @Inject(method = "init", at = @At("HEAD"), remap = false, require = 0)

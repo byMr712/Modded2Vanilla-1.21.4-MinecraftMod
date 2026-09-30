@@ -8,48 +8,50 @@
 ![ModMenu](https://img.shields.io/badge/ModMenu-Supported-blue.svg)
 ![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 
-**Modded2Vanilla** is a universal client-side mod for **Minecraft 1.21.4 (Fabric)** that allows you to play with your favorite content mods (blocks, entities, food, weapons, decorations) in singleplayer and seamlessly connect to any external servers (Vanilla, Paper, Purpur, Spigot, Realms, and via ViaFabricPlus) without disabling mods or swapping launcher profiles.
+Client-side mod for **Minecraft 1.21.4 (Fabric)** that ensures seamless compatibility between modded client setups and vanilla/multiplayer servers.
 
 ---
 
-## Purpose & Problem Solved
+## About
 
-When content mods are installed on the client, they register blocks, items, and entities into Minecraft's global registries. Connecting to standard multiplayer servers (Vanilla, Paper, Spigot) or using **ViaFabricPlus** causes network collisions:
-- Global block and item IDs shift (e.g., vanilla sugar cane or logs visually turning into modded blocks).
-- Entity metadata packets break (`Invalid entity data item type`), causing crashes upon encountering vanilla mobs.
-- Registry mismatches pollute network packet handling.
-
-**Modded2Vanilla** automatically detects connection types:
-- When joining vanilla/remote servers, it isolates mod data and provides an exact standard vanilla registry mapping.
-- **If a mod is installed on both client and server** — its functionality is unaffected, synchronizing custom packets and data normally.
+**Modded2Vanilla** is a specialized client-side isolation and compatibility layer. It allows players to enjoy content mods (adding custom blocks, entities, weapons, armor, food, decorations, and items) in singleplayer while seamlessly connecting to any external multiplayer servers (Vanilla, Paper, Purpur, Spigot, Realms, and via ViaFabricPlus) without disabling mods or maintaining separate launcher profiles.
 
 ---
 
-## What Modded2Vanilla Does
+## Problem Solved
 
-1. **Block Palette Protection (`Block.STATE_IDS` / Network Chunks)**:
-   - Intercepts lookups to global block state registries and serves a clean 1.21.4 vanilla palette, preventing visual block desyncs in the world.
-2. **Item ID Normalization (`Item.byRawId`)**:
-   - Ensures strict alignment of network item packets to standard vanilla IDs.
-3. **Smart Entity Metadata Protection (`DataTracker`)**:
-   - Automatically validates entity data types (`entryIdMatches`).
-   - If the server is vanilla and a client mod shifts `LivingEntity` indices, it safely re-aligns them.
-   - If the server has the mod and sends custom data, it passes through untouched.
-4. **Seamless ViaFabricPlus Support**:
-   - When using **ViaFabricPlus**, prevents version translation conflicts (from 1.8 to 1.21.x), ensuring protocol translators work with pristine vanilla ID tables.
+When content mods are installed on a client, they expand entity metadata tables (`DataTracker`) and register custom registry entries. Connecting with such a client to standard servers (Vanilla, Paper, Spigot) or across versions via **ViaFabricPlus** causes network desynchronization:
+- Entity metadata index collisions occur (`DataTracker`), causing `Invalid entity data item type` and `ArrayIndexOutOfBoundsException` crashes when spawning mobs or players.
+- Network packet handling issues arise from unmapped sound, particle, or screen identifiers.
+- Early mod initialization can interfere with standard registry ordering.
 
 ---
 
-## Automatic Mode Switching
+## Features
 
-The mod requires no configuration and works completely automatically:
+- **Smart Entity Metadata Protection (`DataTracker`)**:
+  - Automatically validates entity data handler types between server and client.
+  - Dynamically re-aligns shifted indices when connecting to vanilla servers.
+  - Prevents crashes and sudden client disconnects from incompatible entity packets.
+- **Safe Network Packet Handling**:
+  - Guards against invalid or unmapped sound and particle identifiers sent by multiplayer servers, preventing `Internal Exception` disconnects.
+- **Early Registry Initialization Isolation**:
+  - Protects standard registries from corruption during early game bootstrap.
+- **Seamless ViaFabricPlus Support**:
+  - Maintains clean metadata environments for network protocol translators when connecting to legacy server versions (1.8 through 1.21.x).
+
+---
+
+## Automatic Mode Distribution
+
+The mod requires no manual setup and adjusts its behavior automatically:
 
 | Game Mode | Behavior |
 |---|---|
-| Singleplayer | Isolation disabled: all custom blocks, mobs, recipes, and items work fully |
-| Vanilla Server (Vanilla / Paper / Purpur / Spigot / Realms) | Isolation active: seamless connection with zero registry conflicts or crashes |
-| Modded Server (Fabric) | Isolation passive: mods present on the server work and sync normally |
-| Connection via ViaFabricPlus (any version) | Isolation active: protocol translators use clean reference vanilla tables |
+| Singleplayer | Isolation disabled: all custom blocks, mobs, recipes, and modded items work in full |
+| Vanilla Server (Vanilla / Paper / Purpur / Spigot / Realms) | Isolation active: connect seamlessly with no registry conflicts or DataTracker crashes |
+| Modded Server (Fabric) | Isolation passive: mods present on both client and server synchronize normally |
+| Connection via ViaFabricPlus (any version) | Isolation active: protocol translators function reliably with clean metadata |
 
 ---
 
@@ -58,6 +60,7 @@ The mod requires no configuration and works completely automatically:
 1. Download the latest release from [GitHub Releases](https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod/releases).
 2. Requires:
    - [Fabric API](https://modrinth.com/mod/fabric-api)
+   - [Mod Menu](https://modrinth.com/mod/modmenu) (optional)
 3. Place the `.jar` file into your `mods` folder.
 4. Launch the game.
 
@@ -77,4 +80,5 @@ The mod requires no configuration and works completely automatically:
 ## Credits & License
 
 - Author: [Mr712](https://github.com/byMr712).
+- Source Code: [GitHub](https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod).
 - Distributed under the [Apache License 2.0](LICENSE).
