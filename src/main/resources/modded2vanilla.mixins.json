@@ -6,6 +6,7 @@
   "mixins": [
     "BlockMixin",
     "DataTrackerMixin",
+    "DecoderHandlerMixin",
     "MixinBootstrap",
     "RegistryMixin"
   ],
