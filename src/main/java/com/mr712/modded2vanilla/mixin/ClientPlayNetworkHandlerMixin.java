@@ -15,15 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.packet.s2c.play.OpenScreenS2CPacket;
 
-import com.mr712.modded2vanilla.tag.TagFallbackHelper;
-
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("TAIL"))
     private void modded2Vanilla$onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         if (IsolatorState.isMultiplayer()) {
-            TagFallbackHelper.applyConventionalTagsFallback();
             AdjustmentTracker.printNoticeIfAny();
         }
     }
