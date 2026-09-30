@@ -1,8 +1,12 @@
 package com.mr712.modded2vanilla.state;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
+import net.minecraft.util.Identifier;
+
+import java.util.Set;
 
 public final class IsolatorState {
     private static volatile boolean forceEnabled = false;
@@ -48,6 +52,39 @@ public final class IsolatorState {
         return client != null && !client.isInSingleplayer() && client.getNetworkHandler() != null;
     }
 
+    public static boolean isChannelSupportedByServer(Identifier channelId) {
+        if (channelId == null || "minecraft".equals(channelId.getNamespace())) {
+            return true;
+        }
+        try {
+            return ClientPlayNetworking.canSend(channelId);
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    public static boolean isModdedServer() {
+        if (!isMultiplayer()) {
+            return false;
+        }
+        String brand = getServerBrand().toLowerCase();
+        if (brand.contains("fabric") || brand.contains("quilt") || brand.contains("forge") || brand.contains("neoforge")) {
+            return true;
+        }
+        try {
+            Set<Identifier> sendable = ClientPlayNetworking.getSendable();
+            if (sendable != null && !sendable.isEmpty()) {
+                for (Identifier id : sendable) {
+                    if (!"minecraft".equals(id.getNamespace())) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return false;
+    }
+
     public static String getServerBrand() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client == null || client.getNetworkHandler() == null) {
@@ -70,3 +107,4 @@ public final class IsolatorState {
         forceDisabled = disabled;
     }
 }
+

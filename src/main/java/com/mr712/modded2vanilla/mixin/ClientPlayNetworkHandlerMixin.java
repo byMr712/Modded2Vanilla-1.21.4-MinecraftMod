@@ -13,12 +13,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.packet.s2c.play.OpenScreenS2CPacket;
+
+import com.mr712.modded2vanilla.tag.TagFallbackHelper;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 
     @Inject(method = "onGameJoin", at = @At("TAIL"))
     private void modded2Vanilla$onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         if (IsolatorState.isMultiplayer()) {
+            TagFallbackHelper.applyConventionalTagsFallback();
             AdjustmentTracker.printNoticeIfAny();
         }
     }
@@ -26,6 +31,17 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "clearWorld", at = @At("HEAD"))
     private void modded2Vanilla$onClearWorld(CallbackInfo ci) {
         AdjustmentTracker.resetSessionNotice();
+    }
+
+    @Inject(method = "onOpenScreen", at = @At("HEAD"), cancellable = true)
+    private void modded2Vanilla$guardOpenScreen(OpenScreenS2CPacket packet, CallbackInfo ci) {
+        if (!IsolatorState.isIsolating()) {
+            return;
+        }
+        if (packet == null || packet.getScreenHandlerType() == null) {
+            Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed invalid OpenScreenS2CPacket from server.");
+            ci.cancel();
+        }
     }
 
     @Inject(method = "onPlaySound", at = @At("HEAD"), cancellable = true)

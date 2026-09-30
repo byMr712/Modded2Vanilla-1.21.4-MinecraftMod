@@ -10,7 +10,10 @@
     "RegistryMixin"
   ],
   "client": [
-    "ClientPlayNetworkHandlerMixin"
+    "ClientConnectionMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "ClientPlayerInteractionManagerMixin",
+    "LivingEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
