@@ -1,6 +1,8 @@
 package com.mr712.modded2vanilla;
 
+import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,5 +13,8 @@ public final class Modded2Vanilla implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("Modded2Vanilla loaded. Modded DataTrackers will be isolated on vanilla/multiplayer servers.");
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            AdjustmentTracker.printStartupNoticeIfAny();
+        });
     }
 }

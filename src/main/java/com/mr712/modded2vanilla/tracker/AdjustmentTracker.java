@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class AdjustmentTracker {
 
     private static final Set<String> AFFECTED_JARS = Collections.synchronizedSet(new LinkedHashSet<>());
-    private static final AtomicBoolean NOTICE_PRINTED = new AtomicBoolean(false);
+    private static final AtomicBoolean STARTUP_NOTICE_PRINTED = new AtomicBoolean(false);
+    private static final AtomicBoolean MP_NOTICE_PRINTED = new AtomicBoolean(false);
 
     private AdjustmentTracker() {
     }
@@ -100,14 +101,27 @@ public final class AdjustmentTracker {
         return modId.endsWith(".jar") ? modId : (modId + ".jar");
     }
 
+    public static void printStartupNoticeIfAny() {
+        if (AFFECTED_JARS.isEmpty()) {
+            return;
+        }
+        if (!STARTUP_NOTICE_PRINTED.compareAndSet(false, true)) {
+            return;
+        }
+        printFormattedNotice();
+    }
+
     public static void printNoticeIfAny() {
         if (AFFECTED_JARS.isEmpty()) {
             return;
         }
-        if (!NOTICE_PRINTED.compareAndSet(false, true)) {
+        if (!MP_NOTICE_PRINTED.compareAndSet(false, true)) {
             return;
         }
+        printFormattedNotice();
+    }
 
+    private static void printFormattedNotice() {
         StringBuilder builder = new StringBuilder();
         builder.append("\n\n");
         builder.append("==========[Modded2Vanilla]=============\n");
@@ -125,7 +139,7 @@ public final class AdjustmentTracker {
     }
 
     public static void resetSessionNotice() {
-        NOTICE_PRINTED.set(false);
+        MP_NOTICE_PRINTED.set(false);
     }
 
     public static boolean hasAdjustments() {
