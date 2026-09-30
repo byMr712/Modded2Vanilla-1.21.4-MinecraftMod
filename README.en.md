@@ -2,68 +2,79 @@
 
 # Modded2Vanilla (Minecraft 1.21.4 Fabric)
 
-**Modded2Vanilla** is a universal client-side compatibility mod for **Minecraft 1.21.4 (Fabric)** that allows you to play singleplayer with your favorite content mods (adding blocks, mobs, food, weapons, decorations) and **seamlessly connect to any external multiplayer servers (Vanilla, Paper, Purpur, Spigot, Realms, or via ViaFabricPlus)** without having to disable your mods or manage separate launcher profiles.
+![Java 21](https://img.shields.io/badge/Java-21-blue.svg)
+![Minecraft](https://img.shields.io/badge/Minecraft-1.21.4-blue.svg)
+![Fabric](https://img.shields.io/badge/Loader-Fabric-blue.svg)
+![ModMenu](https://img.shields.io/badge/ModMenu-Supported-blue.svg)
+![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
+
+**Modded2Vanilla** is a universal client-side mod for **Minecraft 1.21.4 (Fabric)** that allows you to play with your favorite content mods (blocks, entities, food, weapons, decorations) in singleplayer and seamlessly connect to any external servers (Vanilla, Paper, Purpur, Spigot, Realms, and via ViaFabricPlus) without disabling mods or swapping launcher profiles.
 
 ---
 
-## 🎯 Primary Purpose
+## Purpose & Problem Solved
 
-When content mods are installed on the client, they register custom blocks, items, and entities into Minecraft's global registries. When attempting to join a regular server (Vanilla, Paper, Spigot, etc.) or a multi-version server via **ViaFabricPlus**, network discrepancies occur:
-- Global block and item IDs get shifted (e.g. vanilla sugar cane or oak logs rendering as custom mod items/blocks).
-- Entity metadata packets break (`Invalid entity data item type`), causing client disconnects/crashes when encountering vanilla entities.
-- Network recipe synchronization gets corrupted.
+When content mods are installed on the client, they register blocks, items, and entities into Minecraft's global registries. Connecting to standard multiplayer servers (Vanilla, Paper, Spigot) or using **ViaFabricPlus** causes network collisions:
+- Global block and item IDs shift (e.g., vanilla sugar cane or logs visually turning into modded blocks).
+- Entity metadata packets break (`Invalid entity data item type`), causing crashes upon encountering vanilla mobs.
+- Registry mismatches pollute network packet handling.
 
-**Modded2Vanilla** intelligently detects the connection context:
-- When joining a vanilla/remote server, it isolates conflicting mod entries and presents standard vanilla registry mappings.
-- **If a mod is installed on BOTH the client and server**, its functionality is **completely untouched**, allowing custom packets and data to synchronize normally!
+**Modded2Vanilla** automatically detects connection types:
+- When joining vanilla/remote servers, it isolates mod data and provides an exact standard vanilla registry mapping.
+- **If a mod is installed on both client and server** — its functionality is unaffected, synchronizing custom packets and data normally.
 
 ---
 
-## 🛠️ Features & Behavior
+## What Modded2Vanilla Does
 
-1. **Block & Chunk Palette ID Protection (`Block.STATE_IDS`)**:
-   - Intercepts lookups to the global BlockState ID palette and returns clean 1.21.4 vanilla IDs. This prevents blocks in the world from visually turning into random mod blocks when joining servers.
+1. **Block Palette Protection (`Block.STATE_IDS` / Network Chunks)**:
+   - Intercepts lookups to global block state registries and serves a clean 1.21.4 vanilla palette, preventing visual block desyncs in the world.
 2. **Item ID Normalization (`Item.byRawId`)**:
-   - Ensures that item network packets consistently resolve to standard vanilla IDs during multiplayer sessions.
-3. **Smart Entity `DataTracker` Metadata Protection**:
-   - Dynamically checks data handler type matches (`entryIdMatches`).
-   - If the server is vanilla and the client has mob mods shifting `LivingEntity` indices, indices are safely realigned.
-   - If the server also has the mod and sends valid custom data, Modded2Vanilla passes it through without interference.
+   - Ensures strict alignment of network item packets to standard vanilla IDs.
+3. **Smart Entity Metadata Protection (`DataTracker`)**:
+   - Automatically validates entity data types (`entryIdMatches`).
+   - If the server is vanilla and a client mod shifts `LivingEntity` indices, it safely re-aligns them.
+   - If the server has the mod and sends custom data, it passes through untouched.
 4. **Seamless ViaFabricPlus Support**:
-   - When using **ViaFabricPlus**, the mod ensures version translators (spanning **1.8** to **1.21.x** and **26.x**) operate on pristine vanilla IDs rather than mod-shifted palettes.
+   - When using **ViaFabricPlus**, prevents version translation conflicts (from 1.8 to 1.21.x), ensuring protocol translators work with pristine vanilla ID tables.
 
 ---
 
-## 🎮 Automatic Behavior Matrix
+## Automatic Mode Switching
 
-The mod requires zero configuration and works automatically:
+The mod requires no configuration and works completely automatically:
 
-| Mode | Behavior |
+| Game Mode | Behavior |
 |---|---|
-| **Singleplayer** | Isolation **OFF**: all your mod blocks, mobs, recipes, and items function at 100% capacity |
-| **Vanilla Server (Vanilla / Paper / Purpur / Spigot / Realms)** | Isolation **ACTIVE**: you connect cleanly without registry conflicts or crashes |
-| **Server with matching mods (Fabric)** | Isolation **transparent**: mods present on the server work and synchronize normally |
-| **Connecting via ViaFabricPlus (all versions)** | Isolation **ACTIVE**: version translators operate on pristine vanilla tables |
+| Singleplayer | Isolation disabled: all custom blocks, mobs, recipes, and items work fully |
+| Vanilla Server (Vanilla / Paper / Purpur / Spigot / Realms) | Isolation active: seamless connection with zero registry conflicts or crashes |
+| Modded Server (Fabric) | Isolation passive: mods present on the server work and sync normally |
+| Connection via ViaFabricPlus (any version) | Isolation active: protocol translators use clean reference vanilla tables |
 
 ---
 
-## 📦 Build
+## Installation
 
-```bash
-gradlew build
-```
-
-Output: `build/libs/Modded2Vanilla-1.21.4-byMr712.jar`.
-
-## 🚀 Installation
-
-1. Install **Fabric Loader** (0.16.0+) and **Fabric API** for 1.21.4.
-2. Place `Modded2Vanilla-1.21.4-byMr712.jar` in your `mods/` directory.
-3. *(Optional)* Install **ViaFabricPlus** if you plan to connect to servers of different versions.
+1. Download the latest release from [GitHub Releases](https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod/releases).
+2. Requires:
+   - [Fabric API](https://modrinth.com/mod/fabric-api)
+3. Place the `.jar` file into your `mods` folder.
 4. Launch the game.
 
 ---
 
-## 📄 License
+## Building
 
-Licensed under **Apache License 2.0**.
+1. Requires Java 21 and Fabric Loader for Minecraft 1.21.4.
+2. To build the project, run:
+   ```bash
+   ./gradlew build
+   ```
+3. The built jar file will be located at `build/libs/Modded2Vanilla-1.21.4-byMr712.jar`.
+
+---
+
+## Credits & License
+
+- Author: [Mr712](https://github.com/byMr712).
+- Distributed under the [Apache License 2.0](LICENSE).
