@@ -5,7 +5,6 @@
 ![Java 21](https://img.shields.io/badge/Java-21-blue.svg)
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.4-blue.svg)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue.svg)
-![ModMenu](https://img.shields.io/badge/ModMenu-Supported-blue.svg)
 ![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 
 Клиентский мод для **Minecraft 1.21.4 (Fabric)**, который обеспечивает совместимость клиентских контентных сборок с ванильными и сторонними мультиплеер-серверами.
@@ -18,7 +17,7 @@
 
 ---
 
-## Проблема
+## Проблема, которую решает мод
 
 При установке контентных модов на клиент они расширяют метаданные сущностей (`DataTracker`) и регистрируют кастомные элементы. При входе с такой сборкой на обычный сервер (Vanilla, Paper, Spigot и т.д.) или на сервер другой версии через **ViaFabricPlus**, происходят сетевые сбои:
 - Смещаются индексы метаданных сущностей (`DataTracker`), вызывая исключения `Invalid entity data item type` и `ArrayIndexOutOfBoundsException` при появлении мобов или игроков.
@@ -58,9 +57,7 @@
 ## Установка
 
 1. Скачайте последнюю версию со страницы [GitHub Releases](https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod/releases).
-2. Требуются:
-   - [Fabric API](https://modrinth.com/mod/fabric-api)
-   - [Mod Menu](https://modrinth.com/mod/modmenu) (по желанию)
+2. Требуется [Fabric API](https://modrinth.com/mod/fabric-api).
 3. Поместите `.jar` файл в папку `mods`.
 4. Запустите игру.
 

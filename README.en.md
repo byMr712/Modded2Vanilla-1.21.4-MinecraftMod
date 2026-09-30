@@ -5,7 +5,6 @@
 ![Java 21](https://img.shields.io/badge/Java-21-blue.svg)
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.4-blue.svg)
 ![Fabric](https://img.shields.io/badge/Loader-Fabric-blue.svg)
-![ModMenu](https://img.shields.io/badge/ModMenu-Supported-blue.svg)
 ![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 
 Client-side mod for **Minecraft 1.21.4 (Fabric)** that ensures seamless compatibility between modded client setups and vanilla/multiplayer servers.
@@ -18,7 +17,7 @@ Client-side mod for **Minecraft 1.21.4 (Fabric)** that ensures seamless compatib
 
 ---
 
-## Problem Solved
+## Problem the Mod Solves
 
 When content mods are installed on a client, they expand entity metadata tables (`DataTracker`) and register custom registry entries. Connecting with such a client to standard servers (Vanilla, Paper, Spigot) or across versions via **ViaFabricPlus** causes network desynchronization:
 - Entity metadata index collisions occur (`DataTracker`), causing `Invalid entity data item type` and `ArrayIndexOutOfBoundsException` crashes when spawning mobs or players.
@@ -58,9 +57,7 @@ The mod requires no manual setup and adjusts its behavior automatically:
 ## Installation
 
 1. Download the latest release from [GitHub Releases](https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod/releases).
-2. Requires:
-   - [Fabric API](https://modrinth.com/mod/fabric-api)
-   - [Mod Menu](https://modrinth.com/mod/modmenu) (optional)
+2. Requires [Fabric API](https://modrinth.com/mod/fabric-api).
 3. Place the `.jar` file into your `mods` folder.
 4. Launch the game.
 
