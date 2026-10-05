@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.mixin;
 
-import com.mr712.modded2vanilla.component.ComponentSanitizer;
+import com.mr712.modded2vanilla.isolator.VanillaMechanicIsolator;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +16,6 @@ public abstract class ClientPlayerInteractionManagerMixin {
         argsOnly = true
     )
     private ItemStack modded2Vanilla$sanitizeCreativeStack(ItemStack stack) {
-        return ComponentSanitizer.sanitizeForVanillaNetwork(stack);
+        return VanillaMechanicIsolator.sanitizeCreativeStack(stack);
     }
 }

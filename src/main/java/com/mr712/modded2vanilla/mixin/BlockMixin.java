@@ -15,7 +15,10 @@ public abstract class BlockMixin {
     @Inject(method = "getStateFromRawId", at = @At("HEAD"), cancellable = true)
     private static void onGetStateFromRawId(int id, CallbackInfoReturnable<BlockState> cir) {
         if (IsolatorState.isIsolating()) {
-            cir.setReturnValue(VanillaBlockStateSnapshot.resolveState(id));
+            BlockState canonical = VanillaBlockStateSnapshot.resolveState(id);
+            if (canonical != null) {
+                cir.setReturnValue(canonical);
+            }
         }
     }
 }

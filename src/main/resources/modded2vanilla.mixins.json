@@ -7,11 +7,14 @@
     "BlockMixin",
     "DataTrackerMixin",
     "DecoderHandlerMixin",
+    "LivingEntityMixin",
     "MixinBootstrap",
+    "PlayerEntityMixin",
     "RegistryMixin"
   ],
   "client": [
     "ClientConnectionMixin",
+    "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientPlayerInteractionManagerMixin",
     "LivingEntityRendererMixin"

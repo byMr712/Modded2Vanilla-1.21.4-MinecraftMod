@@ -4,6 +4,7 @@ import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -13,11 +14,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientConnection.class)
+@Mixin(value = ClientConnection.class, priority = 2000)
 public abstract class ClientConnectionMixin {
 
-    @Inject(method = "send(Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"), cancellable = true)
-    private void modded2Vanilla$filterOutgoingCustomPayload(Packet<?> packet, CallbackInfo ci) {
+    @Inject(
+        method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void modded2Vanilla$filterOutgoingCustomPayload(Packet<?> packet, PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
