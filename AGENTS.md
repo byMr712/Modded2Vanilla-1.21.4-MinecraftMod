@@ -1,14 +1,14 @@
-# Developer & Agent Guidelines — MrModded2Vanilla (1.21.4)
+# Developer & Agent Guidelines — MrModded2Vanilla (1.21.3)
 
 ## 1. Project Overview & Identity
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
-- **Target Minecraft Version:** 1.21.4
+- **Target Minecraft Version:** 1.21.3
 - **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
-- **Mapping Stack:** Yarn `1.21.4+build.8:v2`
-- **Fabric API:** `0.119.4+1.21.4`
+- **Mapping Stack:** Yarn `1.21.3+build.2:v2`
+- **Fabric API:** `0.114.1+1.21.3`
 - **Java Requirement:** Java 21 LTS
-- **Build Output:** `MrModded2Vanilla-Fabric-1.21.4-byMr712-v1.0.jar`
+- **Build Output:** `MrModded2Vanilla-Fabric-1.21.3-byMr712-v1.0.jar`
 - **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
 - **Author:** [Mr712](https://github.com/byMr712)
 - **License:** Apache-2.0
@@ -46,8 +46,8 @@
 
 ---
 
-## 3. Version Nuances (Minecraft 1.21.4)
-- **Render State Architecture:** Minecraft 1.21.4 utilizes `LivingEntityRenderState` in `LivingEntityRenderer.render(S, MatrixStack, VertexConsumerProvider, int)`.
+## 3. Version Nuances (Minecraft 1.21.3)
+- **Render State Architecture:** Minecraft 1.21.3 utilizes `LivingEntityRenderState` in `LivingEntityRenderer.render(S, MatrixStack, VertexConsumerProvider, int)`.
 - **Movement Flags:** Movement packets (`PlayerMoveC2SPacket`) include the `horizontalCollision` boolean flag.
 - **Data Components:** Uses the standard 1.20.5+ Data Component system via `Registries.DATA_COMPONENT_TYPE` and `ItemStack.getComponents()`.
 - **DataTracker Architecture:** `DataTracker` uses array-based storage `DataTracker.Entry<?>[] entries` and `DataTracked` interface.
@@ -60,4 +60,4 @@
   ```bash
   ./gradlew build
   ```
-- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.4-byMr712-v1.0.jar`.
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.3-byMr712-v1.0.jar`.
