@@ -44,9 +44,14 @@
 - Detects and records any non-system classes and third-party mod JARs that triggered runtime isolation.
 - Emits exactly one formatted notice to the client log upon connecting to a multiplayer server.
 
+### 2.7 Configuration & Packet Pipeline Isolation (ClientConnectionMixin + ClientPlayNetworkHandlerMixin)
+- Filters configuration-phase SelectKnownPacksC2SPacket packets to pure vanilla known packs (isVanilla()), eliminating disconnects caused by client-side modpack declarations.
+- Safely validates incoming BlockEntityUpdateS2CPacket packets to prevent crashes from null or unsupported block entity types.
+- Provides direct in-place component sanitization (ComponentSanitizer.sanitizeInPlace) to strip non-minecraft Data Components.
 ---
 
 ## 3. Version Nuances (Minecraft 1.21)
+- **Known Packs Pipeline:** Employs `SelectKnownPacksC2SPacket` filtering during the network configuration phase.
 - **Entity Rendering Pipeline:** Minecraft 1.21 renders entities directly via `LivingEntityRenderer.render(T, float, float, MatrixStack, VertexConsumerProvider, int)` without `LivingEntityRenderState` (which was introduced in 1.21.2).
 - **Feature Rendering:** `FeatureRenderer.render()` accepts individual pose and animation float parameters `(matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch)`.
 - **Network Dispatch:** Uses standard Netty `PacketCallbacks` on `ClientConnection.send`.
