@@ -47,6 +47,11 @@
 - Detects and records any non-system classes and third-party mod JARs that triggered runtime isolation.
 - Emits exactly one formatted notice to the client log upon connecting to a multiplayer server.
 
+### 2.7 Configuration & Packet Pipeline Isolation (`ClientConnectionMixin` + `ClientPlayNetworkHandlerMixin`)
+- Filters configuration-phase `ServerboundSelectKnownPacks` packets to pure vanilla known packs (`isVanilla()`), eliminating disconnects caused by client-side modpack declarations.
+- Safely validates incoming `ClientboundBlockEntityDataPacket` packets to prevent crashes from null or unsupported block entity types.
+- Provides direct in-place component sanitization (`ComponentSanitizer.sanitizeInPlace`) to strip non-minecraft Data Components.
+
 ---
 
 ## 3. Version Nuances (Minecraft 26.1.2)
@@ -57,6 +62,7 @@
 - **SynchedEntityData Storage:** Entity tracker uses `itemsById` array and `DataValue<?>` records instead of legacy entries.
 - **Network Pipeline:** Uses `Connection.send(Packet, ChannelFutureListener, boolean)` and `PacketDecoder.decode`. Custom payload uses `ServerboundCustomPayloadPacket` with `payload().type().id()`.
 - **Render State Pipeline:** Uses `LivingEntityRenderer.submit(S, PoseStack, SubmitNodeCollector, CameraRenderState)` redirecting `RenderLayer.submit`.
+- **Known Packs Pipeline:** Employs `ServerboundSelectKnownPacks` filtering during the network configuration phase.
 
 ---
 
