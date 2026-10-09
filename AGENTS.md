@@ -1,14 +1,14 @@
-# Developer & Agent Guidelines — MrModded2Vanilla (1.21.6)
+# Developer & Agent Guidelines — MrModded2Vanilla (1.21.7)
 
 ## 1. Project Overview & Identity
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
-- **Target Minecraft Version:** 1.21.6
+- **Target Minecraft Version:** 1.21.7
 - **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
-- **Mapping Stack:** Yarn `1.21.6+build.1:v2`
-- **Fabric API:** `0.128.2+1.21.6`
+- **Mapping Stack:** Yarn `1.21.7+build.8:v2`
+- **Fabric API:** `0.129.0+1.21.7`
 - **Java Requirement:** Java 21 LTS
-- **Build Output:** `MrModded2Vanilla-Fabric-1.21.6-byMr712-v1.0.jar`
+- **Build Output:** `MrModded2Vanilla-Fabric-1.21.7-byMr712-v1.0.jar`
 - **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
 - **Author:** [Mr712](https://github.com/byMr712)
 - **License:** Apache-2.0
@@ -46,10 +46,10 @@
 
 ---
 
-## 3. Version Nuances (Minecraft 1.21.6)
+## 3. Version Nuances (Minecraft 1.21.7)
 - **NetworkState Architecture:** `NetworkState` moved to package `net.minecraft.network.state.NetworkState`.
 - **Network Packet Dispatch:** `ClientConnection.send` uses Netty `ChannelFutureListener` instead of legacy `PacketCallbacks`.
-- **Render State Architecture:** Minecraft 1.21.6 utilizes `LivingEntityRenderState` in `LivingEntityRenderer.render(S, MatrixStack, VertexConsumerProvider, int)`.
+- **Render State Architecture:** Minecraft 1.21.7 utilizes `LivingEntityRenderState` in `LivingEntityRenderer.render(S, MatrixStack, VertexConsumerProvider, int)`.
 - **Movement Flags:** Movement packets (`PlayerMoveC2SPacket`) include the `horizontalCollision` boolean flag.
 - **Data Components:** Uses the standard 1.20.5+ Data Component system via `Registries.DATA_COMPONENT_TYPE` and `ItemStack.getComponents()`.
 - **DataTracker Architecture:** `DataTracker` uses array-based storage `DataTracker.Entry<?>[] entries` and `DataTracked` interface.
@@ -62,4 +62,4 @@
   ```bash
   ./gradlew build
   ```
-- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.6-byMr712-v1.0.jar`.
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.7-byMr712-v1.0.jar`.
