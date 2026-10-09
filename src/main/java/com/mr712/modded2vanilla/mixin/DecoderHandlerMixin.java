@@ -4,7 +4,7 @@ import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.network.NetworkState;
+import net.minecraft.network.state.NetworkState;
 import net.minecraft.network.handler.DecoderHandler;
 import net.minecraft.network.packet.Packet;
 import org.spongepowered.asm.mixin.Final;
