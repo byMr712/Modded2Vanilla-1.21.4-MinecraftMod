@@ -73,4 +73,15 @@ public abstract class ClientPlayNetworkHandlerMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "onBlockEntityUpdate", at = @At("HEAD"), cancellable = true)
+    private void modded2Vanilla$guardBlockEntityUpdate(net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket packet, CallbackInfo ci) {
+        if (!IsolatorState.isMultiplayer()) {
+            return;
+        }
+        if (packet == null || packet.getBlockEntityType() == null) {
+            Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed invalid BlockEntityUpdate packet from server.");
+            ci.cancel();
+        }
+    }
 }
