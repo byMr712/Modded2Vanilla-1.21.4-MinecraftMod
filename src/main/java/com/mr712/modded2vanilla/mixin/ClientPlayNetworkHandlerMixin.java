@@ -67,7 +67,7 @@ public abstract class ClientPlayNetworkHandlerMixin {
         if (!IsolatorState.isMultiplayer()) {
             return;
         }
-        if (packet == null || packet.getParticle() == null) {
+        if (packet == null || packet.particle() == null) {
             Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed invalid Particle packet from server.");
             ci.cancel();
         }
