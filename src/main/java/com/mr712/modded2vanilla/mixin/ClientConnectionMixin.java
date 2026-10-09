@@ -3,8 +3,8 @@ package com.mr712.modded2vanilla.mixin;
 import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
+import io.netty.channel.ChannelFutureListener;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -18,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ClientConnectionMixin {
 
     @Inject(
-        method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V",
+        method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;Z)V",
         at = @At("HEAD"),
         cancellable = true
     )
-    private void modded2Vanilla$filterOutgoingCustomPayload(Packet<?> packet, PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
+    private void modded2Vanilla$filterOutgoingCustomPayload(Packet<?> packet, ChannelFutureListener callbacks, boolean flush, CallbackInfo ci) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
