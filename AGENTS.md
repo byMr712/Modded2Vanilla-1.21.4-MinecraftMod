@@ -1,14 +1,14 @@
-# Developer & Agent Guidelines — MrModded2Vanilla (1.21.10)
+# Developer & Agent Guidelines — MrModded2Vanilla (1.21.11)
 
 ## 1. Project Overview & Identity
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
-- **Target Minecraft Version:** 1.21.10
+- **Target Minecraft Version:** 1.21.11
 - **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
-- **Mapping Stack:** Yarn `1.21.10+build.3:v2`
-- **Fabric API:** `0.138.4+1.21.10`
+- **Mapping Stack:** Yarn `1.21.11+build.6:v2`
+- **Fabric API:** `0.141.6+1.21.11`
 - **Java Requirement:** Java 21 LTS
-- **Build Output:** `MrModded2Vanilla-Fabric-1.21.10-byMr712-v1.0.jar`
+- **Build Output:** `MrModded2Vanilla-Fabric-1.21.11-byMr712-v1.0.jar`
 - **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
 - **Author:** [Mr712](https://github.com/byMr712)
 - **License:** Apache-2.0
@@ -46,10 +46,10 @@
 
 ---
 
-## 3. Version Nuances (Minecraft 1.21.10)
+## 3. Version Nuances (Minecraft 1.21.11)
 - **NetworkState Architecture:** `NetworkState` moved to package `net.minecraft.network.state.NetworkState`.
 - **Network Packet Dispatch:** `ClientConnection.send` uses Netty `ChannelFutureListener` instead of legacy `PacketCallbacks`.
-- **Render State Architecture:** Minecraft 1.21.10 utilizes `LivingEntityRenderState` with `OrderedRenderCommandQueue` and `CameraRenderState` in `LivingEntityRenderer.render(S, MatrixStack, OrderedRenderCommandQueue, CameraRenderState)`.
+- **Render State Architecture:** Minecraft 1.21.11 utilizes `LivingEntityRenderState` with `OrderedRenderCommandQueue` and `CameraRenderState` in `LivingEntityRenderer.render(S, MatrixStack, OrderedRenderCommandQueue, CameraRenderState)`.
 - **Movement Flags:** Movement packets (`PlayerMoveC2SPacket`) include the `horizontalCollision` boolean flag.
 - **Data Components:** Uses the standard 1.20.5+ Data Component system via `Registries.DATA_COMPONENT_TYPE` and `ItemStack.getComponents()`.
 - **DataTracker Architecture:** `DataTracker` uses array-based storage `DataTracker.Entry<?>[] entries` and `DataTracked` interface.
@@ -62,4 +62,4 @@
   ```bash
   ./gradlew build
   ```
-- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.10-byMr712-v1.0.jar`.
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.11-byMr712-v1.0.jar`.
