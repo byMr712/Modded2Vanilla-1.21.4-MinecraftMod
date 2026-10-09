@@ -3,7 +3,7 @@ package com.mr712.modded2vanilla.render;
 import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -22,7 +22,7 @@ public final class SafeRenderHelper {
     public static <S extends LivingEntityRenderState> void safeRenderFeature(
         FeatureRenderer<S, ?> featureRenderer,
         MatrixStack matrices,
-        VertexConsumerProvider vertexConsumers,
+        OrderedRenderCommandQueue renderQueue,
         int light,
         S state,
         float limbAngle,
@@ -33,12 +33,12 @@ public final class SafeRenderHelper {
         }
 
         if (!IsolatorState.isIsolating()) {
-            featureRenderer.render(matrices, vertexConsumers, light, state, limbAngle, limbDistance);
+            featureRenderer.render(matrices, renderQueue, light, state, limbAngle, limbDistance);
             return;
         }
 
         try {
-            featureRenderer.render(matrices, vertexConsumers, light, state, limbAngle, limbDistance);
+            featureRenderer.render(matrices, renderQueue, light, state, limbAngle, limbDistance);
         } catch (Throwable t) {
             String className = featureRenderer.getClass().getName();
             if (LOGGED_CRASHING_RENDERERS.add(className)) {
