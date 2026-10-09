@@ -1,14 +1,14 @@
-# Developer & Agent Guidelines — MrModded2Vanilla (1.21)
+# Developer & Agent Guidelines — MrModded2Vanilla (1.21.1)
 
 ## 1. Project Overview & Identity
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
-- **Target Minecraft Version:** 1.21
+- **Target Minecraft Version:** 1.21.1
 - **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
-- **Mapping Stack:** Yarn `1.21+build.9:v2`
-- **Fabric API:** `0.102.0+1.21`
+- **Mapping Stack:** Yarn `1.21.1+build.3:v2`
+- **Fabric API:** `0.116.17+1.21.1`
 - **Java Requirement:** Java 21 LTS
-- **Build Output:** `MrModded2Vanilla-Fabric-1.21-byMr712-v1.0.jar`
+- **Build Output:** `MrModded2Vanilla-Fabric-1.21.1-byMr712-v1.0.jar`
 - **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
 - **Author:** [Mr712](https://github.com/byMr712)
 - **License:** Apache-2.0
@@ -46,8 +46,8 @@
 
 ---
 
-## 3. Version Nuances (Minecraft 1.21)
-- **Entity Rendering Pipeline:** Minecraft 1.21 renders entities directly via `LivingEntityRenderer.render(T, float, float, MatrixStack, VertexConsumerProvider, int)` without `LivingEntityRenderState` (which was introduced in 1.21.2).
+## 3. Version Nuances (Minecraft 1.21.1)
+- **Entity Rendering Pipeline:** Minecraft 1.21.1 renders entities directly via `LivingEntityRenderer.render(T, float, float, MatrixStack, VertexConsumerProvider, int)` without `LivingEntityRenderState` (which was introduced in 1.21.2).
 - **Feature Rendering:** `FeatureRenderer.render()` accepts individual pose and animation float parameters `(matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch)`.
 - **Network Dispatch:** Uses standard Netty `PacketCallbacks` on `ClientConnection.send`.
 - **DataTracker Architecture:** `DataTracker` uses array-based storage `DataTracker.Entry<?>[] entries` and `DataTracked` interface.
@@ -60,4 +60,4 @@
   ```bash
   ./gradlew build
   ```
-- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21-byMr712-v1.0.jar`.
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.1-byMr712-v1.0.jar`.
