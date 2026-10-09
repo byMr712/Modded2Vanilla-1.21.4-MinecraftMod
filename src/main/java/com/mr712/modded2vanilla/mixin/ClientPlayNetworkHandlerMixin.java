@@ -4,6 +4,7 @@ import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
@@ -69,6 +70,17 @@ public abstract class ClientPlayNetworkHandlerMixin {
         }
         if (packet == null || packet.getParticle() == null) {
             Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed invalid Particle packet from server.");
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "handleBlockEntityData", at = @At("HEAD"), cancellable = true)
+    private void modded2Vanilla$guardBlockEntityData(ClientboundBlockEntityDataPacket packet, CallbackInfo ci) {
+        if (!IsolatorState.isMultiplayer()) {
+            return;
+        }
+        if (packet == null || packet.getType() == null) {
+            Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed invalid BlockEntityData packet from server.");
             ci.cancel();
         }
     }
