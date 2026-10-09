@@ -1,15 +1,15 @@
-# Developer & Agent Guidelines — MrModded2Vanilla (26.1.2)
+# Developer & Agent Guidelines — MrModded2Vanilla (26.2)
 
 ## 1. Project Overview & Identity
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
-- **Target Minecraft Version:** 26.1.2
+- **Target Minecraft Version:** 26.2
 - **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
 - **Mapping Stack:** Mojang Mappings (Official) via local empty mappings
-- **Fabric API:** `0.155.3+26.1.2`
-- **Mod Menu:** `18.0.2`
+- **Fabric API:** `0.161.0+26.2`
+- **Mod Menu:** `20.0.3`
 - **Java Requirement:** Java 25 LTS
-- **Build Output:** `MrModded2Vanilla-Fabric-26.1.2-byMr712-v1.0.jar`
+- **Build Output:** `MrModded2Vanilla-Fabric-26.2-byMr712-v1.0.jar`
 - **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
 - **Author:** [Mr712](https://github.com/byMr712)
 - **License:** Apache-2.0
@@ -49,7 +49,7 @@
 
 ---
 
-## 3. Version Nuances (Minecraft 26.1.2)
+## 3. Version Nuances (Minecraft 26.2)
 - **Official Mojang Mappings:** Uses official Mojang namespace directly without Yarn intermediaries (`net.minecraft.world.level.block.Block`, `net.minecraft.network.syncher.SynchedEntityData`, `net.minecraft.client.player.LocalPlayer`).
 - **Java 25 Requirement:** Minecraft 26.x requires Java 25 LTS compiler and runtime.
 - **Identifier Naming:** Mojang mappings in 26.x use `net.minecraft.resources.Identifier` directly.
@@ -66,4 +66,4 @@
   ```bash
   ./gradlew build
   ```
-- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-26.1.2-byMr712-v1.0.jar`.
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-26.2-byMr712-v1.0.jar`.
