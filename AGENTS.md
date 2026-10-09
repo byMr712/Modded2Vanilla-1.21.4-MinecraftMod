@@ -1,122 +1,63 @@
-# AGENTS.md — Руководство разработчика и архитектурный регламент Modded2Vanilla
+# Developer & Agent Guidelines — MrModded2Vanilla (1.21.4)
 
-## 1. Обзор проекта
-
-- **Название:** Modded2Vanilla
-- **Назначение:** Клиентский слой изоляции и совместимости для игры с контентными сборками на ванильных и сторонних серверах (Vanilla, Paper, Purpur, Spigot, Realms, ViaFabricPlus).
-- **Версия Minecraft:** `1.21.4`
-- **Загрузчик:** Fabric Loader (`0.16.0+`)
-- **Java:** `21`
-- **Маппинги:** Yarn `1.21.4+build.7`
-- **Имя артефакта:** `Modded2Vanilla-1.21.4-byMr712.jar`
-- **Автор:** [Mr712](https://github.com/byMr712)
-
----
-
-## 2. Фундаментальный принцип: Полная универсальность и автономность
-
-Modded2Vanilla спроектирован как универсальное (must-have) решение без захардкоженных классов под конкретные моды:
-
-### 2.1. Автоматическое определение без ручных правок
-- **Универсальные перехватчики:** Мод работает на уровне системных точек ядра Minecraft (`Registry`, `Bootstrap`, `Block`, `DataTracker`, `ClientPlayNetworkHandler`), автоматически изолируя и исправляя любые сторонние моды.
-- **Никаких жестких зависимостей:** В коде отсутствуют зависимости от сторонних модов. Все механизмы работают автономно и адаптивно.
-- **Разделение режимов:**
-  - В **одиночной игре (`Singleplayer`)**: контентные моды, кастомные блоки, сущности, крафты и предметы работают напрямую без ограничений и изоляций.
-  - В **мультиплеере (`Multiplayer / Vanilla / ViaFabricPlus`)**: активируется строгая изоляция реестров, защита `DataTracker`, санитизация звуков/частиц и предохранение сетевых пакетов.
+## 1. Project Overview & Identity
+- **Mod Name:** MrModded2Vanilla
+- **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
+- **Target Minecraft Version:** 1.21.4
+- **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
+- **Mapping Stack:** Yarn `1.21.4+build.8:v2`
+- **Fabric API:** `0.119.4+1.21.4`
+- **Java Requirement:** Java 21 LTS
+- **Build Output:** `MrModded2Vanilla-Fabric-1.21.4-byMr712-v1.0.jar`
+- **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
+- **Author:** [Mr712](https://github.com/byMr712)
+- **License:** Apache-2.0
 
 ---
 
-## 3. Архитектура и ключевые модули
+## 2. Core Architecture & Modules
 
-### 3.1. Универсальный буфер ранней регистрации (`UniversalRegistryBuffer` + `RegistryMixin`)
-- **Проблема:** Некоторые сторонние моды вызывают регистрацию своих блоков/предметов/сущностей во время работы `Bootstrap.initialize()`, что вклинивает модовый контент внутрь ванильной палитры `Block.STATE_IDS` и `Registries.BLOCK / ITEM`.
-- **Решение:**
-  - Во время `Bootstrap.initialize()` перехватчик `RegistryMixin` перехватывает любые регистрации с `namespace != "minecraft"`.
-  - Модовые записи автоматически помещаются в `UniversalRegistryBuffer`.
-  - Мод-нарушитель автоматически определяется и регистрируется в `AdjustmentTracker`.
-  - На этапе `Bootstrap.initialize() -> TAIL` все накопленные записи пакетом сбрасываются в реестры, гарантируя, что ванильные ID получают строго слоты `0..N`.
+### 2.1 Universal Registry Buffer (`UniversalRegistryBuffer` + `RegistryMixin`)
+- Intercepts registration attempts during `Bootstrap.initialize()` when namespace != `"minecraft"`.
+- Modded entries are temporarily held in `UniversalRegistryBuffer` and flushed cleanly at `Bootstrap.initialize() -> TAIL`.
+- Ensures canonical vanilla block/item states occupy deterministic initial palette indices `0..N`.
 
-### 3.2. Канонический ванильный слепок (`VanillaBlockStateSnapshot` + `BlockMixin`)
-- Сразу после завершения чистого `Bootstrap.initialize()` создаётся неизменяемый слепок таблицы ванильных состояний блоков.
-- В мультиплеере (`IsolatorState.isIsolating()`) разрешение `Block.getStateFromRawId(id)` использует слепок, исключая любое перемешивание или смещение блоков.
+### 2.2 Canonical Block State Snapshot (`VanillaBlockStateSnapshot` + `BlockMixin`)
+- Captures an immutable snapshot of pure vanilla block states right after bootstrap completion.
+- When isolating in multiplayer (`IsolatorState.isIsolating()`), `Block.getStateFromRawId(id)` resolves against the snapshot, preventing ID shifts and mismatch.
 
-### 3.3. Компенсация метаданных сущностей (`DataTrackerMixin`)
-- При расхождении сетевых индексов метаданных сущностей (`SetEntityDataS2CPacket`) между сервером и клиентом:
-  - Автоматически находит целевой слот по типу хэндлера (`TrackedDataHandler`) и дельта-смещениям (`+1, -1, +2...`).
-  - Предотвращает вылеты `Invalid entity data item type` и обрывы соединения.
-  - Фиксирует затронутый класс сущности в `AdjustmentTracker`.
+### 2.3 Entity Metadata Compensation (`DataTrackerMixin`)
+- Resolves discrepancies in entity metadata entries (`DataTracker`) between client and server.
+- Automatically handles index shifts (`+1, -1, +2, -2...`) and matches handlers safely, preventing `Invalid entity data item type` crashes.
 
-### 3.4. Универсальный изолятор механик (`VanillaMechanicIsolator` + `MovementIsolator` + `InteractionIsolator` + `InventoryIsolator`)
-- **Проблема:** Сторонние моды, модифицирующие физику, скорость лазания по лестницам, шаг, прыжки в воздухе, дистанцию взаимодействия (reach), край блока и математику коллизий (`better_climbing`, `airhop`, `bridgingmod`, `breakfree`, `lithium`), а также микро-высоты (ковры `0.0625`, снег, полублоки) вызывают рассинхронизацию `onGround` и дельты координат, триггеря античиты (GrimAC, Vulcan, Matrix, Paper checks: `GroundSpoof`, `Hover`, `Step`, `FastClimb`, `Reach`, `AirWalk`).
-- **Решение:**
-  - В мультиплеере (`IsolatorState.isIsolating()`):
-    - **Движение и коллизии (`MovementIsolator`):** Координаты исходящих пакетов движения (`PlayerMoveC2SPacket`) автоматически привязываются к точной сетке вокселей (`1/16` = 0.0625, `1/64`). Статус `onGround` строго синхронизируется с физической поддержкой блока/ковра и вертикальной скоростью игрока, исключая ложные зависания и споофинг.
-    - **Лестницы и перемещение:** Скорость подъема (макс. `0.2`) и спуска (макс. `-0.15`) по лестницам, лианам и строительным лесам принудительно нормализуется под ванильный стандарт ядра.
-    - **Шаги и прыжки:** Высота шага (`stepHeight`) ограничивается ванильным пределом `0.6F`. Невалидные прыжки в воздухе без опоры блокируются.
-    - **Взаимодействие и радиус (`InteractionIsolator`):** Дистанция взаимодействия с блоками (выживание `4.5`, креатив `5.0`) и сущностями (`3.0`) строго удерживается в ванильных рамках.
-    - **Инвентарь (`InventoryIsolator`):** Кастомные модовые компоненты безопасно санитизируются перед отправкой в сеть.
-  - Сторонние моды, вмешивающиеся в механики, автоматически фиксируются в `AdjustmentTracker`.
-  - В **одиночной игре** все моды работают без ограничений.
+### 2.4 Mechanics & Interaction Isolation (`VanillaMechanicIsolator`, `LivingEntityMixin`, `PlayerEntityMixin`)
+- Clamps player step height to vanilla `0.6F`.
+- Normalizes climbing speeds on ladders, vines, and scaffolding.
+- Restricts mid-air jumps without physical support.
+- Enforces strict vanilla reach distance (survival: 4.5 blocks, creative: 5.0 blocks, entity reach: 3.0 blocks).
+- Sanitizes creative item components (`ComponentSanitizer`) before dispatch to vanilla servers.
 
-### 3.5. Оповещение об авто-исправлениях (`AdjustmentTracker`)
-- Если во время запуска или игры были применены исправления несовместимостей модов, в момент подключения к серверу в лог выводится ровно **одно** информационное сообщение в строгом формате:
+### 2.5 Safe Feature Rendering (`SafeRenderHelper` + `LivingEntityRendererMixin`)
+- Wraps `FeatureRenderer.render()` in try-catch handlers to prevent client crashes from malformed third-party cosmetics or animations.
 
-```text
-
-==========[Modded2Vanilla]=============
-Notice: Modded2Vanilla detected mods incompatible with multiplayer/vanilla servers and applied runtime adjustments. 
-This will not affect your singleplayer experience, enjoy your game!
-
-Affected mods: 
-[Полное_название_файла_мода.jar]
-[Полное_название_файла_мода.jar]
-==========[Modded2Vanilla]=============
-
-```
+### 2.6 Adjustment Tracker (`AdjustmentTracker`)
+- Detects and records any non-system classes and third-party mod JARs that triggered runtime isolation.
+- Emits exactly one formatted notice to the client log upon connecting to a multiplayer server.
 
 ---
 
-## 4. Требования к оформлению кода и сборке
-
-1. **Единый Jar-вывод:**
-   - Сборка генерирует строго один исполняемый файл: `Modded2Vanilla-1.21.4-byMr712.jar`.
-   - Формирование `sourcesJar`, `remapSourcesJar` и `javadocJar` отключено.
-2. **Стиль документации:**
-   - Никаких лишних эмодзи в README и исходных файлах.
-   - Авторство указывается строго в финальном разделе «Авторы и лицензия».
-3. **Лицензирование:**
-   - Проект распространяется под лицензией **Apache-2.0**.
+## 3. Version Nuances (Minecraft 1.21.4)
+- **Render State Architecture:** Minecraft 1.21.4 utilizes `LivingEntityRenderState` in `LivingEntityRenderer.render(S, MatrixStack, VertexConsumerProvider, int)`.
+- **Movement Flags:** Movement packets (`PlayerMoveC2SPacket`) include the `horizontalCollision` boolean flag.
+- **Data Components:** Uses the standard 1.20.5+ Data Component system via `Registries.DATA_COMPONENT_TYPE` and `ItemStack.getComponents()`.
+- **DataTracker Architecture:** `DataTracker` uses array-based storage `DataTracker.Entry<?>[] entries` and `DataTracked` interface.
 
 ---
 
-## 5. Стандарты оформления коммитов (Commit Message Guidelines)
-
-1. **Заголовок (Title):**
-   * Краткое и емкое описание изменений на английском языке в повелительном наклонении (`Fix ...`, `Add ...`, `Refactor ...`, `Update ...`).
-   * Без точки на конце строки.
-   * Длина строки заголовка предпочтительно до 72 символов.
-
-2. **Пустая строка** между заголовком и подробным описанием.
-
-3. **Тело коммита (Body):**
-   * Маркированный список конкретных изменений (`- <Компонент/Класс/Файл>: <описание сути изменения>`).
-   * Четкое техническое объяснение: что именно исправлено, оптимизировано или добавлено.
-
-**Пример структуры:**
-```
-Fix shaped recipe sliding matching, LAN permissions, and GUI freeze
-
-- CustomDynamicCraftingRecipe: implement sliding window (dx, dy) matching for recipes smaller than 3x3
-- RecipeEditorMod: verify integrated server host to prevent unauthorized LAN changes
-- RecipeInspector: scan mod JARs asynchronously on startup to eliminate screen freeze
-```
-
----
-
-## 6. Стандарты составления README (Player-Friendly Documentation)
-
-Файлы `README.md` и `readme.en.md` (при наличии) предназначены для **обычных игроков**, а не разработчиков.
-* **Никакого кода и внутреннего сленга:** избегать упоминания имён Java-классов, низкоуровневых методов, сетевых пакетов и чисто технических терминов.
-* **Фокус на игровом опыте:** описывать, что игрок видит, нажимает и получает в игре.
-* **Понятные описания:** объяснять возможности мода простым языком, доступным для рядового игрока.
-* **Без разделителей (`---`):** категорически **не добавлять** горизонтальные линии-разделители `---` между секциями и заголовками в файлах `README.md` и `readme.en.md`. Документ должен быть чистым, с разделением блоков только заголовками и стандартными отступами.
+## 4. Build Instructions
+- Prerequisites: Java 21 or Java 25 JDK installed.
+- Compile and build:
+  ```bash
+  ./gradlew build
+  ```
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.4-byMr712-v1.0.jar`.

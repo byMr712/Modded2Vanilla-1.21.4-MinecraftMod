@@ -14,7 +14,6 @@
   ],
   "client": [
     "ClientConnectionMixin",
-    "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ClientPlayerInteractionManagerMixin",
     "LivingEntityRendererMixin"

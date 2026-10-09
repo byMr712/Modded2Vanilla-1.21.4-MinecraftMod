@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "id": "modded2vanilla",
   "version": "${version}",
-  "name": "Modded2Vanilla",
+  "name": "[MR] Modded2Vanilla",
   "description": "Universal client-side compatibility layer. Seamlessly play with your favorite client content mods and join any vanilla/Paper/Spigot/ViaFabricPlus multiplayer servers without ID shifts, recipe conflicts, or entity tracker crashes.",
   "authors": [
     "byMr712"
   ],
   "contact": {
-    "sources": "https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod",
-    "issues": "https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod/issues",
-    "homepage": "https://github.com/byMr712/Modded2Vanilla-1.21.4-MinecraftMod"
+    "sources": "https://github.com/byMr712/Modded2Vanilla-MinecraftMod",
+    "issues": "https://github.com/byMr712/Modded2Vanilla-MinecraftMod/issues",
+    "homepage": "https://github.com/byMr712/Modded2Vanilla-MinecraftMod"
   },
   "license": "Apache-2.0",
   "icon": "assets/modded2vanilla/icon.png",
@@ -25,8 +25,10 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.0",
-    "minecraft": "~1.21.4",
-    "java": ">=21",
-    "fabric-api": "*"
+    "minecraft": "${minecraft_version}",
+    "java": ">=21"
+  },
+  "suggests": {
+    "modmenu": "*"
   }
 }

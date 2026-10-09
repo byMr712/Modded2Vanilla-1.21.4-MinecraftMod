@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class AdjustmentTracker {
 
     private static final Set<String> AFFECTED_JARS = Collections.synchronizedSet(new LinkedHashSet<>());
+    private static final Set<String> CHECKED_CLASSES = Collections.synchronizedSet(new HashSet<>());
     private static final AtomicBoolean STARTUP_NOTICE_PRINTED = new AtomicBoolean(false);
     private static final AtomicBoolean MP_NOTICE_PRINTED = new AtomicBoolean(false);
 
@@ -28,17 +30,24 @@ public final class AdjustmentTracker {
         }
         return className.startsWith("net.minecraft.") ||
                className.startsWith("com.mojang.") ||
-               className.startsWith("net.fabricmc.loader.") ||
-               className.startsWith("net.fabricmc.fabric.") ||
+               className.startsWith("net.fabricmc.") ||
                className.startsWith("java.") ||
                className.startsWith("javax.") ||
                className.startsWith("jdk.") ||
                className.startsWith("sun.") ||
+               className.startsWith("com.sun.") ||
                className.startsWith("org.spongepowered.") ||
                className.startsWith("org.objectweb.asm.") ||
                className.startsWith("org.slf4j.") ||
                className.startsWith("org.apache.") ||
-               className.startsWith("com.mr712.modded2vanilla.");
+               className.startsWith("com.google.") ||
+               className.startsWith("io.netty.") ||
+               className.startsWith("org.lwjgl.") ||
+               className.startsWith("org.joml.") ||
+               className.startsWith("org.jetbrains.") ||
+               className.startsWith("it.unimi.dsi.fastutil.") ||
+               className.startsWith("com.mr712.modded2vanilla.") ||
+               className.startsWith("com.mr712.mrmodded2vanilla.");
     }
 
     public static boolean isSystemMod(String modId) {
@@ -55,7 +64,8 @@ public final class AdjustmentTracker {
                modId.startsWith("fabric-") ||
                modId.startsWith("fabric_") ||
                modId.startsWith("com_mojang_") ||
-               "modded2vanilla".equalsIgnoreCase(modId);
+               "modded2vanilla".equalsIgnoreCase(modId) ||
+               "mrmodded2vanilla".equalsIgnoreCase(modId);
     }
 
     public static void recordMod(String modId) {
@@ -80,7 +90,7 @@ public final class AdjustmentTracker {
     }
 
     public static void recordClassName(String className) {
-        if (isSystemClass(className)) {
+        if (isSystemClass(className) || !CHECKED_CLASSES.add(className)) {
             return;
         }
 
