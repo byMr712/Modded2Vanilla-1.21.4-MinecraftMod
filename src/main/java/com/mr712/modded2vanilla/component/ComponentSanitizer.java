@@ -19,7 +19,6 @@ public final class ComponentSanitizer {
             return stack;
         }
         if (IsolatorState.isModdedServer()) {
-            // Modded server supports modded components, don't strip
             return stack;
         }
 
@@ -50,5 +49,24 @@ public final class ComponentSanitizer {
             }
         }
         return copy;
+    }
+
+    public static void sanitizeInPlace(ItemStack stack) {
+        if (stack == null || stack.isEmpty() || !IsolatorState.isIsolating() || IsolatorState.isModdedServer()) {
+            return;
+        }
+
+        ComponentMap components = stack.getComponents();
+        if (components == null || components.isEmpty()) {
+            return;
+        }
+
+        for (ComponentType<?> type : components.getTypes()) {
+            Identifier id = Registries.DATA_COMPONENT_TYPE.getId(type);
+            if (id != null && !"minecraft".equals(id.getNamespace())) {
+                stack.set(type, null);
+                AdjustmentTracker.recordMod(id.getNamespace());
+            }
+        }
     }
 }
