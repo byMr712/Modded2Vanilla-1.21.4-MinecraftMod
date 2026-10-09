@@ -8,14 +8,22 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.configuration.ServerboundSelectKnownPacks;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.repository.KnownPack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 @Mixin(value = Connection.class, priority = 2000)
 public abstract class ClientConnectionMixin {
+
+    @Shadow
+    public abstract void send(Packet<?> packet, ChannelFutureListener listener, boolean flush);
 
     @Inject(
         method = "send(Lnet/minecraft/network/protocol/Packet;Lio/netty/channel/ChannelFutureListener;Z)V",
@@ -34,6 +42,16 @@ public abstract class ClientConnectionMixin {
                     Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed unsupported outgoing CustomPayload channel: {}", channelId);
                     AdjustmentTracker.recordMod(channelId.getNamespace());
                     ci.cancel();
+                }
+            }
+        } else if (packet instanceof ServerboundSelectKnownPacks packsPacket) {
+            if (packsPacket.knownPacks() != null) {
+                List<KnownPack> filtered = packsPacket.knownPacks().stream()
+                    .filter(KnownPack::isVanilla)
+                    .toList();
+                if (filtered.size() != packsPacket.knownPacks().size()) {
+                    ci.cancel();
+                    this.send(new ServerboundSelectKnownPacks(filtered), callbacks, flush);
                 }
             }
         }
