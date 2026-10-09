@@ -5,7 +5,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,36 +12,44 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(LivingEntityRenderer.class)
-public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<? super S>> {
+public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> {
 
     @Redirect(
-        method = "render(Lnet/minecraft/client/render/entity/state/LivingEntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
+        method = "render(Lnet/minecraft/entity/LivingEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/render/entity/feature/FeatureRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/state/EntityRenderState;FF)V"
+            target = "Lnet/minecraft/client/render/entity/feature/FeatureRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/Entity;FFFFFF)V"
         )
     )
     private void modded2Vanilla$redirectFeatureRender(
-        FeatureRenderer<S, M> instance,
+        FeatureRenderer<T, M> instance,
         MatrixStack matrices,
         VertexConsumerProvider vertexConsumers,
         int light,
-        net.minecraft.client.render.entity.state.EntityRenderState state,
+        net.minecraft.entity.Entity entity,
         float limbAngle,
-        float limbDistance
+        float limbDistance,
+        float tickDelta,
+        float animationProgress,
+        float headYaw,
+        float headPitch
     ) {
-        if (state instanceof LivingEntityRenderState livingState) {
+        if (entity instanceof LivingEntity living) {
             SafeRenderHelper.safeRenderFeature(
                 instance,
                 matrices,
                 vertexConsumers,
                 light,
-                (S) livingState,
+                (T) living,
                 limbAngle,
-                limbDistance
+                limbDistance,
+                tickDelta,
+                animationProgress,
+                headYaw,
+                headPitch
             );
         } else {
-            instance.render(matrices, vertexConsumers, light, (S) state, limbAngle, limbDistance);
+            instance.render(matrices, vertexConsumers, light, (T) entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
         }
     }
 }

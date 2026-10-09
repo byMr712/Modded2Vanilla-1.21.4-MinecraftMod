@@ -5,8 +5,8 @@ import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,26 +19,30 @@ public final class SafeRenderHelper {
     private SafeRenderHelper() {
     }
 
-    public static <S extends LivingEntityRenderState> void safeRenderFeature(
-        FeatureRenderer<S, ?> featureRenderer,
+    public static <T extends LivingEntity> void safeRenderFeature(
+        FeatureRenderer<T, ?> featureRenderer,
         MatrixStack matrices,
         VertexConsumerProvider vertexConsumers,
         int light,
-        S state,
+        T entity,
         float limbAngle,
-        float limbDistance
+        float limbDistance,
+        float tickDelta,
+        float animationProgress,
+        float headYaw,
+        float headPitch
     ) {
         if (featureRenderer == null) {
             return;
         }
 
         if (!IsolatorState.isIsolating()) {
-            featureRenderer.render(matrices, vertexConsumers, light, state, limbAngle, limbDistance);
+            featureRenderer.render(matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
             return;
         }
 
         try {
-            featureRenderer.render(matrices, vertexConsumers, light, state, limbAngle, limbDistance);
+            featureRenderer.render(matrices, vertexConsumers, light, entity, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
         } catch (Throwable t) {
             String className = featureRenderer.getClass().getName();
             if (LOGGED_CRASHING_RENDERERS.add(className)) {
