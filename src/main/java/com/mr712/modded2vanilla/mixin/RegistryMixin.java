@@ -1,9 +1,9 @@
 package com.mr712.modded2vanilla.mixin;
 
 import com.mr712.modded2vanilla.registry.UniversalRegistryBuffer;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public interface RegistryMixin {
 
     @Inject(
-        method = "register(Lnet/minecraft/registry/Registry;Lnet/minecraft/registry/RegistryKey;Ljava/lang/Object;)Ljava/lang/Object;",
+        method = "register(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/ResourceKey;Ljava/lang/Object;)Ljava/lang/Object;",
         at = @At("HEAD"),
         cancellable = true
     )
-    private static <V, T extends V> void onRegisterWithKey(Registry<V> registry, RegistryKey<V> key, T entry, CallbackInfoReturnable<T> cir) {
+    private static <V, T extends V> void onRegisterWithKey(Registry<V> registry, ResourceKey<V> key, T entry, CallbackInfoReturnable<T> cir) {
         if (UniversalRegistryBuffer.isBootstrappingVanilla() && key != null) {
-            String namespace = key.getValue().getNamespace();
+            String namespace = key.identifier().getNamespace();
             if (!"minecraft".equals(namespace)) {
                 T result = UniversalRegistryBuffer.deferOrRegister(registry, key, entry);
                 cir.setReturnValue(result);
@@ -28,7 +28,7 @@ public interface RegistryMixin {
     }
 
     @Inject(
-        method = "register(Lnet/minecraft/registry/Registry;Lnet/minecraft/util/Identifier;Ljava/lang/Object;)Ljava/lang/Object;",
+        method = "register(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/Identifier;Ljava/lang/Object;)Ljava/lang/Object;",
         at = @At("HEAD"),
         cancellable = true
     )

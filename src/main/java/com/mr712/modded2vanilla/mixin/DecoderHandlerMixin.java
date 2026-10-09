@@ -4,9 +4,9 @@ import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.network.state.NetworkState;
-import net.minecraft.network.handler.DecoderHandler;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.PacketDecoder;
+import net.minecraft.network.ProtocolInfo;
+import net.minecraft.network.protocol.Packet;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,15 +14,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.IOException;
 import java.util.List;
 
-@Mixin(DecoderHandler.class)
+@Mixin(PacketDecoder.class)
 public abstract class DecoderHandlerMixin {
 
     @Shadow
     @Final
-    private NetworkState<?> state;
+    private ProtocolInfo<?> protocolInfo;
 
     @Inject(method = "decode", at = @At("HEAD"), cancellable = true)
     private void modded2Vanilla$safeDecode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> objects, CallbackInfo ci) {
@@ -39,7 +38,7 @@ public abstract class DecoderHandlerMixin {
 
         int readerIndex = buf.readerIndex();
         try {
-            Packet<?> packet = (Packet<?>) this.state.codec().decode(buf);
+            Packet<?> packet = (Packet<?>) this.protocolInfo.codec().decode(buf);
             if (buf.isReadable()) {
                 int extra = buf.readableBytes();
                 Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed {} extra trailing bytes in packet {}", extra, packet.getClass().getSimpleName());

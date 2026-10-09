@@ -2,9 +2,9 @@ package com.mr712.modded2vanilla.registry;
 
 import com.mr712.modded2vanilla.Modded2Vanilla;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ public final class UniversalRegistryBuffer {
     }
 
     @SuppressWarnings("unchecked")
-    public static synchronized <V, T extends V> T deferOrRegister(Registry<V> registry, RegistryKey<V> key, T entry) {
+    public static synchronized <V, T extends V> T deferOrRegister(Registry<V> registry, ResourceKey<V> key, T entry) {
         if (!isBootstrappingVanilla()) {
             return Registry.register(registry, key, entry);
         }
 
-        String namespace = key.getValue().getNamespace();
+        String namespace = key.identifier().getNamespace();
         if ("minecraft".equals(namespace)) {
             return Registry.register(registry, key, entry);
         }
@@ -82,7 +82,7 @@ public final class UniversalRegistryBuffer {
         PENDING_REGISTRATIONS.clear();
     }
 
-    private record DeferredRegistration<V, T extends V>(Registry<V> registry, RegistryKey<V> key, Identifier id, T entry) {
+    private record DeferredRegistration<V, T extends V>(Registry<V> registry, ResourceKey<V> key, Identifier id, T entry) {
         void register() {
             if (key != null) {
                 Registry.register(registry, key, entry);

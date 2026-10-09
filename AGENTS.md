@@ -1,14 +1,15 @@
-# Developer & Agent Guidelines — MrModded2Vanilla (1.21.11)
+# Developer & Agent Guidelines — MrModded2Vanilla (26.1)
 
 ## 1. Project Overview & Identity
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
-- **Target Minecraft Version:** 1.21.11
+- **Target Minecraft Version:** 26.1
 - **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
-- **Mapping Stack:** Yarn `1.21.11+build.6:v2`
-- **Fabric API:** `0.141.6+1.21.11`
-- **Java Requirement:** Java 21 LTS
-- **Build Output:** `MrModded2Vanilla-Fabric-1.21.11-byMr712-v1.0.jar`
+- **Mapping Stack:** Mojang Mappings (Official) via local empty mappings
+- **Fabric API:** `0.145.1+26.1`
+- **Mod Menu:** `18.0.2`
+- **Java Requirement:** Java 25 LTS
+- **Build Output:** `MrModded2Vanilla-Fabric-26.1-byMr712-v1.0.jar`
 - **Repository:** https://github.com/byMr712/Modded2Vanilla-MinecraftMod
 - **Author:** [Mr712](https://github.com/byMr712)
 - **License:** Apache-2.0
@@ -18,27 +19,29 @@
 ## 2. Core Architecture & Modules
 
 ### 2.1 Universal Registry Buffer (`UniversalRegistryBuffer` + `RegistryMixin`)
-- Intercepts registration attempts during `Bootstrap.initialize()` when namespace != `"minecraft"`.
-- Modded entries are temporarily held in `UniversalRegistryBuffer` and flushed cleanly at `Bootstrap.initialize() -> TAIL`.
+- Intercepts registration attempts during `Bootstrap.bootStrap()` when namespace != `"minecraft"`.
+- Modded entries are temporarily held in `UniversalRegistryBuffer` and flushed cleanly at `Bootstrap.bootStrap() -> TAIL`.
 - Ensures canonical vanilla block/item states occupy deterministic initial palette indices `0..N`.
 
 ### 2.2 Canonical Block State Snapshot (`VanillaBlockStateSnapshot` + `BlockMixin`)
-- Captures an immutable snapshot of pure vanilla block states right after bootstrap completion.
-- When isolating in multiplayer (`IsolatorState.isIsolating()`), `Block.getStateFromRawId(id)` resolves against the snapshot, preventing ID shifts and mismatch.
+- Captures an immutable snapshot of pure vanilla block states right after bootstrap completion via `Block.BLOCK_STATE_REGISTRY`.
+- When isolating in multiplayer (`IsolatorState.isIsolating()`), `Block.stateById(id)` resolves against the snapshot, preventing ID shifts and mismatch.
 
 ### 2.3 Entity Metadata Compensation (`DataTrackerMixin`)
-- Resolves discrepancies in entity metadata entries (`DataTracker`) between client and server.
-- Automatically handles index shifts (`+1, -1, +2, -2...`) and matches handlers safely, preventing `Invalid entity data item type` crashes.
+- Resolves discrepancies in entity metadata entries (`SynchedEntityData`) between client and server.
+- Automatically handles index shifts (`+1, -1, +2, -2...`) and matches serializers safely, preventing `Invalid entity data item type` crashes.
+- Shadows `entity` (`SyncedDataHolder`) and `itemsById` (`DataItem<?>[]`).
 
 ### 2.4 Mechanics & Interaction Isolation (`VanillaMechanicIsolator`, `LivingEntityMixin`, `PlayerEntityMixin`)
-- Clamps player step height to vanilla `0.6F`.
-- Normalizes climbing speeds on ladders, vines, and scaffolding.
-- Restricts mid-air jumps without physical support.
-- Enforces strict vanilla reach distance (survival: 4.5 blocks, creative: 5.0 blocks, entity reach: 3.0 blocks).
-- Sanitizes creative item components (`ComponentSanitizer`) before dispatch to vanilla servers.
+- Clamps player step height via `LivingEntity.maxUpStep` to vanilla `0.6F`.
+- Normalizes climbing speeds on ladders, vines, and scaffolding via `LivingEntity.handleOnClimbable(Vec3)`.
+- Restricts mid-air jumps without physical support via `LivingEntity.jumpFromGround()`.
+- Enforces strict vanilla reach distance (survival: 4.5 blocks, creative: 5.0 blocks, entity reach: 3.0 blocks) via `Player.blockInteractionRange()` and `Player.entityInteractionRange()`.
+- Guards ledge-clipping invariance via `Player.isStayingOnGroundSurface()`.
+- Sanitizes creative item components (`ComponentSanitizer`) in `MultiPlayerGameMode.handleCreativeModeItemAdd` before dispatch to vanilla servers.
 
 ### 2.5 Safe Feature Rendering (`SafeRenderHelper` + `LivingEntityRendererMixin`)
-- Wraps `FeatureRenderer.render()` in try-catch handlers to prevent client crashes from malformed third-party cosmetics or animations.
+- Intercepts `RenderLayer.submit(PoseStack, SubmitNodeCollector, int, S, float, float)` in `LivingEntityRenderer.submit` with try-catch handlers to prevent client crashes from malformed third-party cosmetics or animations.
 
 ### 2.6 Adjustment Tracker (`AdjustmentTracker`)
 - Detects and records any non-system classes and third-party mod JARs that triggered runtime isolation.
@@ -46,20 +49,21 @@
 
 ---
 
-## 3. Version Nuances (Minecraft 1.21.11)
-- **NetworkState Architecture:** `NetworkState` moved to package `net.minecraft.network.state.NetworkState`.
-- **Network Packet Dispatch:** `ClientConnection.send` uses Netty `ChannelFutureListener` instead of legacy `PacketCallbacks`.
-- **Render State Architecture:** Minecraft 1.21.11 utilizes `LivingEntityRenderState` with `OrderedRenderCommandQueue` and `CameraRenderState` in `LivingEntityRenderer.render(S, MatrixStack, OrderedRenderCommandQueue, CameraRenderState)`.
-- **Movement Flags:** Movement packets (`PlayerMoveC2SPacket`) include the `horizontalCollision` boolean flag.
-- **Data Components:** Uses the standard 1.20.5+ Data Component system via `Registries.DATA_COMPONENT_TYPE` and `ItemStack.getComponents()`.
-- **DataTracker Architecture:** `DataTracker` uses array-based storage `DataTracker.Entry<?>[] entries` and `DataTracked` interface.
+## 3. Version Nuances (Minecraft 26.1)
+- **Official Mojang Mappings:** Uses official Mojang namespace directly without Yarn intermediaries (`net.minecraft.world.level.block.Block`, `net.minecraft.network.syncher.SynchedEntityData`, `net.minecraft.client.player.LocalPlayer`).
+- **Java 25 Requirement:** Minecraft 26.x requires Java 25 LTS compiler and runtime.
+- **Identifier Naming:** Mojang mappings in 26.x use `net.minecraft.resources.Identifier` directly.
+- **Bootstrap Initialization:** Uses `Bootstrap.bootStrap()` with a capital S.
+- **SynchedEntityData Storage:** Entity tracker uses `itemsById` array and `DataValue<?>` records instead of legacy entries.
+- **Network Pipeline:** Uses `Connection.send(Packet, ChannelFutureListener, boolean)` and `PacketDecoder.decode`. Custom payload uses `ServerboundCustomPayloadPacket` with `payload().type().id()`.
+- **Render State Pipeline:** Uses `LivingEntityRenderer.submit(S, PoseStack, SubmitNodeCollector, CameraRenderState)` redirecting `RenderLayer.submit`.
 
 ---
 
 ## 4. Build Instructions
-- Prerequisites: Java 21 or Java 25 JDK installed.
+- Prerequisites: Java 25 JDK installed.
 - Compile and build:
   ```bash
   ./gradlew build
   ```
-- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-1.21.11-byMr712-v1.0.jar`.
+- Resulting jar: `build/libs/MrModded2Vanilla-Fabric-26.1-byMr712-v1.0.jar`.
