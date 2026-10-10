@@ -15,7 +15,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
         at = @At("HEAD"),
         argsOnly = true
     )
-    private ItemStack modded2Vanilla$sanitizeCreativeStack(ItemStack stack) {
+    private ItemStack mrModded2Vanilla$sanitizeCreativeStack(ItemStack stack) {
         return VanillaMechanicIsolator.sanitizeCreativeStack(stack);
     }
 }

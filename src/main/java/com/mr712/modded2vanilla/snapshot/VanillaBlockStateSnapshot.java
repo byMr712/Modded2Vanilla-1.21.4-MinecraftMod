@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.snapshot;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import net.minecraft.block.Block;
@@ -34,7 +34,7 @@ public final class VanillaBlockStateSnapshot {
                 STATE_TO_RAW_ID.put(state, i);
             }
         }
-        Modded2Vanilla.LOGGER.info("Captured pure vanilla block state snapshot ({} canonical states).", VANILLA_STATES.length);
+        MrModded2Vanilla.LOGGER.info("Captured pure vanilla block state snapshot ({} canonical states).", VANILLA_STATES.length);
     }
 
     public static BlockState resolveState(int rawId) {
