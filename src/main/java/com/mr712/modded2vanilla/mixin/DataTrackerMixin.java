@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.mixin;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -29,7 +29,7 @@ public abstract class DataTrackerMixin {
     private SynchedEntityData.DataItem<?>[] itemsById;
 
     @Inject(method = "defineId", at = @At("HEAD"))
-    private static <T> void modded2Vanilla$onDefineId(
+    private static <T> void mrModded2Vanilla$onDefineId(
         Class<? extends SyncedDataHolder> entityClass, EntityDataSerializer<T> dataHandler, CallbackInfoReturnable<EntityDataAccessor<T>> cir
     ) {
         if (entityClass != null && entityClass.getName().startsWith("net.minecraft.")) {
@@ -45,7 +45,7 @@ public abstract class DataTrackerMixin {
     }
 
     @Inject(method = "assignValues", at = @At("HEAD"), cancellable = true)
-    private void modded2Vanilla$safeAssignValues(
+    private void mrModded2Vanilla$safeAssignValues(
         List<SynchedEntityData.DataValue<?>> list, CallbackInfo ci
     ) {
         if (list == null || list.isEmpty()) {
@@ -82,8 +82,8 @@ public abstract class DataTrackerMixin {
                         this.entity.onSyncedDataUpdated(targetEntry.getAccessor());
                     }
                 } catch (Throwable t) {
-                    Modded2Vanilla.LOGGER.debug(
-                        "[Modded2Vanilla] Handled data update exception for entity {}: {}",
+                    MrModded2Vanilla.LOGGER.debug(
+                        "[MrModded2Vanilla] Handled data update exception for entity {}: {}",
                         this.entity, t.getMessage()
                     );
                 }
@@ -91,8 +91,8 @@ public abstract class DataTrackerMixin {
                 if (this.entity != null) {
                     AdjustmentTracker.recordClass(this.entity.getClass());
                 }
-                Modded2Vanilla.LOGGER.debug(
-                    "[Modded2Vanilla] Suppressed unresolvable tracked entry id {} for entity {}",
+                MrModded2Vanilla.LOGGER.debug(
+                    "[MrModded2Vanilla] Suppressed unresolvable tracked entry id {} for entity {}",
                     rawId, this.entity
                 );
             }
@@ -102,8 +102,8 @@ public abstract class DataTrackerMixin {
             try {
                 this.entity.onSyncedDataUpdated(list);
             } catch (Throwable t) {
-                Modded2Vanilla.LOGGER.debug(
-                    "[Modded2Vanilla] Handled onSyncedDataUpdated exception for entity {}: {}",
+                MrModded2Vanilla.LOGGER.debug(
+                    "[MrModded2Vanilla] Handled onSyncedDataUpdated exception for entity {}: {}",
                     this.entity, t.getMessage()
                 );
             }
@@ -111,7 +111,7 @@ public abstract class DataTrackerMixin {
     }
 
     @Inject(method = "assignValue", at = @At("HEAD"), cancellable = true, require = 0)
-    private void modded2Vanilla$guardAssignValue(
+    private void mrModded2Vanilla$guardAssignValue(
         SynchedEntityData.DataItem<?> to, SynchedEntityData.DataValue<?> from, CallbackInfo ci
     ) {
         if (!IsolatorState.isCompensatingDataTracker()) {
@@ -121,8 +121,8 @@ public abstract class DataTrackerMixin {
             if (this.entity != null) {
                 AdjustmentTracker.recordClass(this.entity.getClass());
             }
-            Modded2Vanilla.LOGGER.debug(
-                "[Modded2Vanilla] Suppressed incompatible entity data update for {}: {}",
+            MrModded2Vanilla.LOGGER.debug(
+                "[MrModded2Vanilla] Suppressed incompatible entity data update for {}: {}",
                 this.entity, from
             );
             ci.cancel();

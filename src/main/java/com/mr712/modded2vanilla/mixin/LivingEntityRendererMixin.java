@@ -24,7 +24,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             target = "Lnet/minecraft/client/renderer/entity/layers/RenderLayer;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/EntityRenderState;FF)V"
         )
     )
-    private void modded2Vanilla$redirectFeatureRender(
+    private void mrModded2Vanilla$redirectFeatureRender(
         RenderLayer<S, M> instance,
         PoseStack poseStack,
         SubmitNodeCollector submitNodeCollector,
