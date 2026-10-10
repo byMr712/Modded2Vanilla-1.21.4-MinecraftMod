@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.render;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -46,7 +46,7 @@ public final class SafeRenderHelper {
         } catch (Throwable t) {
             String className = featureRenderer.getClass().getName();
             if (LOGGED_CRASHING_RENDERERS.add(className)) {
-                Modded2Vanilla.LOGGER.warn("[Modded2Vanilla] Handled crash in FeatureRenderer {}: {}", className, t.getMessage());
+                MrModded2Vanilla.LOGGER.warn("[MrModded2Vanilla] Handled crash in FeatureRenderer {}: {}", className, t.getMessage());
                 AdjustmentTracker.recordClassName(className);
             }
         }
