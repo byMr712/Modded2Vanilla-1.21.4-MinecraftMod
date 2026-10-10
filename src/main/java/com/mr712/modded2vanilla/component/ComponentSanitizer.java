@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.component;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.component.ComponentMap;
