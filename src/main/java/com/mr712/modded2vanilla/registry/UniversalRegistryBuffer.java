@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.registry;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -70,13 +70,13 @@ public final class UniversalRegistryBuffer {
             return;
         }
 
-        Modded2Vanilla.LOGGER.info("Flushing {} deferred mod registry entries after vanilla initialization...", PENDING_REGISTRATIONS.size());
+        MrModded2Vanilla.LOGGER.info("Flushing {} deferred mod registry entries after vanilla initialization...", PENDING_REGISTRATIONS.size());
 
         for (final DeferredRegistration<?, ?> deferred : PENDING_REGISTRATIONS) {
             try {
                 deferred.register();
             } catch (Throwable t) {
-                Modded2Vanilla.LOGGER.error("Failed to register deferred entry {}: {}", deferred, t.getMessage(), t);
+                MrModded2Vanilla.LOGGER.error("Failed to register deferred entry {}: {}", deferred, t.getMessage(), t);
             }
         }
         PENDING_REGISTRATIONS.clear();

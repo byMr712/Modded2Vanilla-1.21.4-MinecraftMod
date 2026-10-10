@@ -1,4 +1,4 @@
 {
-  "modmenu.nameTranslation.modded2vanilla": "Modded2Vanilla",
+  "modmenu.nameTranslation.modded2vanilla": "[MR] Modded2Vanilla",
   "modmenu.descriptionTranslation.modded2vanilla": "Universal client-side compatibility layer isolating modded registries and DataTrackers when joining vanilla/multiplayer servers."
 }
