@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PlayerEntityMixin {
 
     @Inject(method = "isStayingOnGroundSurface", at = @At("RETURN"), cancellable = true)
-    private void modded2Vanilla$guardClipAtLedge(CallbackInfoReturnable<Boolean> cir) {
+    private void mrModded2Vanilla$guardClipAtLedge(CallbackInfoReturnable<Boolean> cir) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
@@ -30,7 +30,7 @@ public abstract class PlayerEntityMixin {
     }
 
     @Inject(method = "blockInteractionRange", at = @At("RETURN"), cancellable = true)
-    private void modded2Vanilla$clampBlockInteractionRange(CallbackInfoReturnable<Double> cir) {
+    private void mrModded2Vanilla$clampBlockInteractionRange(CallbackInfoReturnable<Double> cir) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
@@ -41,7 +41,7 @@ public abstract class PlayerEntityMixin {
     }
 
     @Inject(method = "entityInteractionRange", at = @At("RETURN"), cancellable = true)
-    private void modded2Vanilla$clampEntityInteractionRange(CallbackInfoReturnable<Double> cir) {
+    private void mrModded2Vanilla$clampEntityInteractionRange(CallbackInfoReturnable<Double> cir) {
         if (!IsolatorState.isIsolating()) {
             return;
         }

@@ -4,7 +4,7 @@
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
 - **Target Minecraft Version:** 26.1
-- **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
+- **Loader:** Fabric Loader (`0.19.5+` / `>=0.19.5`)
 - **Mapping Stack:** Mojang Mappings (Official) via local empty mappings
 - **Fabric API:** `0.145.1+26.1`
 - **Mod Menu:** `18.0.2`
