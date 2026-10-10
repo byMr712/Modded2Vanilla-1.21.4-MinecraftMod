@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.mixin;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.entity.Entity;
@@ -27,7 +27,7 @@ public abstract class DataTrackerMixin {
     private DataTracker.Entry<?>[] entries;
 
     @Inject(method = "registerData", at = @At("HEAD"))
-    private static <T> void modded2Vanilla$onRegisterData(
+    private static <T> void mrModded2Vanilla$onRegisterData(
         Class<? extends Entity> entityClass, TrackedDataHandler<T> dataHandler, CallbackInfoReturnable<TrackedData<T>> cir
     ) {
         if (entityClass != null && entityClass.getName().startsWith("net.minecraft.")) {
@@ -43,7 +43,7 @@ public abstract class DataTrackerMixin {
     }
 
     @Inject(method = "writeUpdatedEntries", at = @At("HEAD"), cancellable = true)
-    private void modded2Vanilla$safeWriteUpdatedEntries(
+    private void mrModded2Vanilla$safeWriteUpdatedEntries(
         List<DataTracker.SerializedEntry<?>> list, CallbackInfo ci
     ) {
         if (list == null || list.isEmpty()) {
@@ -80,8 +80,8 @@ public abstract class DataTrackerMixin {
                         this.trackedEntity.onTrackedDataSet(targetEntry.getData());
                     }
                 } catch (Throwable t) {
-                    Modded2Vanilla.LOGGER.debug(
-                        "[Modded2Vanilla] Handled data update exception for entity {}: {}",
+                    MrModded2Vanilla.LOGGER.debug(
+                        "[MrModded2Vanilla] Handled data update exception for entity {}: {}",
                         this.trackedEntity, t.getMessage()
                     );
                 }
@@ -89,8 +89,8 @@ public abstract class DataTrackerMixin {
                 if (this.trackedEntity != null) {
                     AdjustmentTracker.recordClass(this.trackedEntity.getClass());
                 }
-                Modded2Vanilla.LOGGER.debug(
-                    "[Modded2Vanilla] Suppressed unresolvable tracked entry id {} for entity {}",
+                MrModded2Vanilla.LOGGER.debug(
+                    "[MrModded2Vanilla] Suppressed unresolvable tracked entry id {} for entity {}",
                     rawId, this.trackedEntity
                 );
             }
@@ -100,8 +100,8 @@ public abstract class DataTrackerMixin {
             try {
                 this.trackedEntity.onDataTrackerUpdate(list);
             } catch (Throwable t) {
-                Modded2Vanilla.LOGGER.debug(
-                    "[Modded2Vanilla] Handled onDataTrackerUpdate exception for entity {}: {}",
+                MrModded2Vanilla.LOGGER.debug(
+                    "[MrModded2Vanilla] Handled onDataTrackerUpdate exception for entity {}: {}",
                     this.trackedEntity, t.getMessage()
                 );
             }
@@ -109,7 +109,7 @@ public abstract class DataTrackerMixin {
     }
 
     @Inject(method = "copyToFrom", at = @At("HEAD"), cancellable = true, require = 0)
-    private void modded2Vanilla$guardCopy(
+    private void mrModded2Vanilla$guardCopy(
         DataTracker.Entry<?> to, DataTracker.SerializedEntry<?> from, CallbackInfo ci
     ) {
         if (!IsolatorState.isCompensatingDataTracker()) {
@@ -119,8 +119,8 @@ public abstract class DataTrackerMixin {
             if (this.trackedEntity != null) {
                 AdjustmentTracker.recordClass(this.trackedEntity.getClass());
             }
-            Modded2Vanilla.LOGGER.debug(
-                "[Modded2Vanilla] Suppressed incompatible entity data update for {}: {}",
+            MrModded2Vanilla.LOGGER.debug(
+                "[MrModded2Vanilla] Suppressed incompatible entity data update for {}: {}",
                 this.trackedEntity, from
             );
             ci.cancel();
