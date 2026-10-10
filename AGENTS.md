@@ -4,7 +4,7 @@
 - **Mod Name:** MrModded2Vanilla
 - **Display Name in Mod Menu:** `[MR] Modded2Vanilla`
 - **Target Minecraft Version:** 1.21.11
-- **Loader:** Fabric Loader (`0.19.5+` / `>=0.16.0`)
+- **Loader:** Fabric Loader (`0.19.5+` / `>=0.19.5`)
 - **Mapping Stack:** Yarn `1.21.11+build.6:v2`
 - **Fabric API:** `0.141.6+1.21.11`
 - **Java Requirement:** Java 21 LTS
