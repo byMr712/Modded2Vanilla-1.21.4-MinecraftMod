@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.tracker;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -172,8 +172,8 @@ public final class AdjustmentTracker {
     private static void printFormattedNotice() {
         StringBuilder builder = new StringBuilder();
         builder.append("\n\n");
-        builder.append("==========[Modded2Vanilla]=============\n");
-        builder.append("Notice: Modded2Vanilla detected mods incompatible with multiplayer/vanilla servers and applied runtime adjustments. \n");
+        builder.append("==========[MrModded2Vanilla]=============\n");
+        builder.append("Notice: MrModded2Vanilla detected mods incompatible with multiplayer/vanilla servers and applied runtime adjustments. \n");
         builder.append("This will not affect your singleplayer experience, enjoy your game!\n\n");
         builder.append("Affected mods: \n");
         synchronized (AFFECTED_JARS) {
@@ -181,9 +181,9 @@ public final class AdjustmentTracker {
                 builder.append("[").append(jar).append("]\n");
             }
         }
-        builder.append("==========[Modded2Vanilla]=============\n\n");
+        builder.append("==========[MrModded2Vanilla]=============\n\n");
 
-        Modded2Vanilla.LOGGER.info("{}", builder);
+        MrModded2Vanilla.LOGGER.info("{}", builder);
     }
 
     public static void resetSessionNotice() {

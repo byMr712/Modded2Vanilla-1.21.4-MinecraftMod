@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.mixin;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,7 +25,7 @@ public abstract class DecoderHandlerMixin {
     private NetworkState<?> state;
 
     @Inject(method = "decode", at = @At("HEAD"), cancellable = true)
-    private void modded2Vanilla$safeDecode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> objects, CallbackInfo ci) {
+    private void mrModded2Vanilla$safeDecode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> objects, CallbackInfo ci) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
@@ -42,12 +42,12 @@ public abstract class DecoderHandlerMixin {
             Packet<?> packet = (Packet<?>) this.state.codec().decode(buf);
             if (buf.isReadable()) {
                 int extra = buf.readableBytes();
-                Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed {} extra trailing bytes in packet {}", extra, packet.getClass().getSimpleName());
+                MrModded2Vanilla.LOGGER.debug("[MrModded2Vanilla] Suppressed {} extra trailing bytes in packet {}", extra, packet.getClass().getSimpleName());
                 buf.skipBytes(extra);
             }
             objects.add(packet);
         } catch (Throwable t) {
-            Modded2Vanilla.LOGGER.warn("[Modded2Vanilla] Suppressed packet decode error in network stream: {}", t.getMessage());
+            MrModded2Vanilla.LOGGER.warn("[MrModded2Vanilla] Suppressed packet decode error in network stream: {}", t.getMessage());
             // Skip the remaining bytes for this frame to prevent crashing channel
             buf.skipBytes(buf.readableBytes());
         }

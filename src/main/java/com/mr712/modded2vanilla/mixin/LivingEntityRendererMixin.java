@@ -21,7 +21,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
             target = "Lnet/minecraft/client/render/entity/feature/FeatureRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/entity/Entity;FFFFFF)V"
         )
     )
-    private void modded2Vanilla$redirectFeatureRender(
+    private void mrModded2Vanilla$redirectFeatureRender(
         FeatureRenderer<T, M> instance,
         MatrixStack matrices,
         VertexConsumerProvider vertexConsumers,
