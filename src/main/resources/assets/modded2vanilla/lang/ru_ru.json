@@ -1,4 +1,4 @@
-{
-  "modmenu.nameTranslation.modded2vanilla": "Modded2Vanilla",
+﻿{
+  "modmenu.nameTranslation.modded2vanilla": "[MR] Modded2Vanilla",
   "modmenu.descriptionTranslation.modded2vanilla": "Универсальный клиентский слой совместимости, изолирующий реестры модов и DataTracker при подключении к ванильным серверам."
 }

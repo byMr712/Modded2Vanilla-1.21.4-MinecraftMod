@@ -1,12 +1,12 @@
-> **Language:** [Русский](README.md) · English
+﻿> **Language:** [Русский](README.md) · English
 
-# Modded2Vanilla
+# MrModded2Vanilla
 
 A client-side Minecraft mod designed to deliver a smooth and stable multiplayer experience when playing with client content modpacks on vanilla and third-party servers.
 
 ## About the Mod
 
-Modded2Vanilla allows you to play with your favorite content mods (custom blocks, items, mobs, armor, and decorations) in singleplayer while seamlessly joining standard multiplayer servers (including Vanilla, Paper, Purpur, Spigot, Realms, and servers joined via ViaFabricPlus) without having to disable mods or change launcher profiles.
+MrModded2Vanilla allows you to play with your favorite content mods (custom blocks, items, mobs, armor, and decorations) in singleplayer while seamlessly joining standard multiplayer servers (including Vanilla, Paper, Purpur, Spigot, Realms, and servers joined via ViaFabricPlus) without having to disable mods or change launcher profiles.
 
 ## The Problem Solved
 
@@ -15,7 +15,7 @@ When you install client-side content mods, they register extra attributes, entit
 - Unexpected disconnections caused by unhandled signals or unrecognized item properties.
 - Visual glitches and crashes caused by failing cosmetic models or custom animations.
 
-Modded2Vanilla automatically protects your multiplayer connection and prevents these issues seamlessly.
+MrModded2Vanilla automatically protects your multiplayer connection and prevents these issues seamlessly.
 
 ## Features
 

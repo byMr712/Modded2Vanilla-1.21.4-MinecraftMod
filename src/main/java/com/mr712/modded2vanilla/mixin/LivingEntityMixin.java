@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class LivingEntityMixin {
 
     @Inject(method = "maxUpStep", at = @At("RETURN"), cancellable = true)
-    private void modded2Vanilla$clampLivingStepHeight(CallbackInfoReturnable<Float> cir) {
+    private void mrModded2Vanilla$clampLivingStepHeight(CallbackInfoReturnable<Float> cir) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
@@ -31,7 +31,7 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "handleOnClimbable", at = @At("HEAD"), cancellable = true)
-    private void modded2Vanilla$pureVanillaApplyClimbingSpeed(Vec3 motion, CallbackInfoReturnable<Vec3> cir) {
+    private void mrModded2Vanilla$pureVanillaApplyClimbingSpeed(Vec3 motion, CallbackInfoReturnable<Vec3> cir) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
@@ -51,7 +51,7 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
-    private void modded2Vanilla$guardJumpInMultiplayer(CallbackInfo ci) {
+    private void mrModded2Vanilla$guardJumpInMultiplayer(CallbackInfo ci) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
