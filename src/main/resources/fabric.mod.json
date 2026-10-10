@@ -17,14 +17,14 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.mr712.modded2vanilla.Modded2Vanilla"
+      "com.mr712.modded2vanilla.MrModded2Vanilla"
     ]
   },
   "mixins": [
     "modded2vanilla.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.0",
+    "fabricloader": ">=0.19.5",
     "minecraft": "${minecraft_version}",
     "java": ">=21"
   },
