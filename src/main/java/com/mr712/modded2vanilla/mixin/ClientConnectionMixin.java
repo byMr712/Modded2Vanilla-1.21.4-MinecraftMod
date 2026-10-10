@@ -1,6 +1,6 @@
 package com.mr712.modded2vanilla.mixin;
 
-import com.mr712.modded2vanilla.Modded2Vanilla;
+import com.mr712.modded2vanilla.MrModded2Vanilla;
 import com.mr712.modded2vanilla.state.IsolatorState;
 import com.mr712.modded2vanilla.tracker.AdjustmentTracker;
 import net.minecraft.network.ClientConnection;
@@ -30,7 +30,7 @@ public abstract class ClientConnectionMixin {
         at = @At("HEAD"),
         cancellable = true
     )
-    private void modded2Vanilla$filterOutgoingCustomPayload(Packet<?> packet, PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
+    private void mrModded2Vanilla$filterOutgoingCustomPayload(Packet<?> packet, PacketCallbacks callbacks, boolean flush, CallbackInfo ci) {
         if (!IsolatorState.isIsolating()) {
             return;
         }
@@ -39,7 +39,7 @@ public abstract class ClientConnectionMixin {
             if (payload != null && payload.getId() != null) {
                 Identifier channelId = payload.getId().id();
                 if (channelId != null && !IsolatorState.isChannelSupportedByServer(channelId)) {
-                    Modded2Vanilla.LOGGER.debug("[Modded2Vanilla] Suppressed unsupported outgoing CustomPayload channel: {}", channelId);
+                    MrModded2Vanilla.LOGGER.debug("[MrModded2Vanilla] Suppressed unsupported outgoing CustomPayload channel: {}", channelId);
                     AdjustmentTracker.recordMod(channelId.getNamespace());
                     ci.cancel();
                 }
